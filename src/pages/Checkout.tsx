@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, CreditCard, Smartphone, Building } from "lucide-react";
+import { Loader2, Banknote } from "lucide-react";
 import { z } from "zod";
 
 const addressSchema = z.object({
@@ -29,7 +28,6 @@ export default function Checkout() {
   const navigate = useNavigate();
   
   const [isLoading, setIsLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("upi");
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const [formData, setFormData] = useState({
@@ -260,48 +258,12 @@ export default function Checkout() {
                   Payment Method
                 </h2>
 
-                <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
-                  <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50">
-                    <RadioGroupItem value="upi" id="upi" />
-                    <Label htmlFor="upi" className="flex items-center gap-3 cursor-pointer flex-1">
-                      <Smartphone className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">UPI</p>
-                        <p className="text-sm text-muted-foreground">Google Pay, PhonePe, Paytm, etc.</p>
-                      </div>
-                    </Label>
+                <div className="flex items-center gap-3 rounded-lg border-2 border-primary bg-primary/5 p-4">
+                  <Banknote className="h-6 w-6 text-primary" />
+                  <div>
+                    <p className="font-medium">Cash on Delivery</p>
+                    <p className="text-sm text-muted-foreground">Pay when you receive your order</p>
                   </div>
-
-                  <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50">
-                    <RadioGroupItem value="card" id="card" />
-                    <Label htmlFor="card" className="flex items-center gap-3 cursor-pointer flex-1">
-                      <CreditCard className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Credit / Debit Card</p>
-                        <p className="text-sm text-muted-foreground">Visa, Mastercard, Rupay</p>
-                      </div>
-                    </Label>
-                  </div>
-
-                  <div className="flex items-center space-x-3 rounded-lg border border-border p-4 cursor-pointer hover:bg-muted/50">
-                    <RadioGroupItem value="netbanking" id="netbanking" />
-                    <Label htmlFor="netbanking" className="flex items-center gap-3 cursor-pointer flex-1">
-                      <Building className="h-5 w-5 text-primary" />
-                      <div>
-                        <p className="font-medium">Net Banking</p>
-                        <p className="text-sm text-muted-foreground">All major banks supported</p>
-                      </div>
-                    </Label>
-                  </div>
-                </RadioGroup>
-
-                <div className="mt-4 flex items-center gap-2">
-                  <img 
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Razorpay_logo.svg/1280px-Razorpay_logo.svg.png" 
-                    alt="Razorpay" 
-                    className="h-6" 
-                  />
-                  <span className="text-sm text-muted-foreground">Secured by Razorpay</span>
                 </div>
               </div>
             </div>
@@ -361,7 +323,7 @@ export default function Checkout() {
                       Processing...
                     </>
                   ) : (
-                    `Pay ₹${finalTotal.toLocaleString("en-IN")}`
+                    `Place Order - ₹${finalTotal.toLocaleString("en-IN")}`
                   )}
                 </Button>
 

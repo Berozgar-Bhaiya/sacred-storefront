@@ -1,25 +1,20 @@
-import { Truck, Shield, HeartHandshake, Headphones } from "lucide-react";
+import { Truck, Shield, RotateCcw } from "lucide-react";
 
 const features = [
   {
     icon: Truck,
-    title: "Pan-India Delivery",
-    description: "Free shipping on orders above ₹499",
+    title: "India Delivery",
+    description: "Delivering across India",
   },
   {
     icon: Shield,
     title: "100% Authentic",
-    description: "Guaranteed genuine products",
+    description: "Genuine products guaranteed",
   },
   {
-    icon: HeartHandshake,
-    title: "Easy Returns",
-    description: "7-day hassle-free returns",
-  },
-  {
-    icon: Headphones,
-    title: "24/7 Support",
-    description: "Always here to help you",
+    icon: RotateCcw,
+    title: "3 Days Return",
+    description: "Easy return policy",
   },
 ];
 
@@ -27,7 +22,7 @@ export function FeaturesBar() {
   return (
     <section className="border-y border-border bg-muted/50 py-8">
       <div className="container">
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 sm:grid-cols-3">
           {features.map((feature, index) => (
             <div
               key={feature.title}

@@ -240,8 +240,8 @@ export default function ProductDetail() {
                     <Truck className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="font-medium">Free Delivery</p>
-                    <p className="text-sm text-muted-foreground">On orders above ₹499 (India only)</p>
+                    <p className="font-medium">India Delivery</p>
+                    <p className="text-sm text-muted-foreground">Delivering across India</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -249,8 +249,8 @@ export default function ProductDetail() {
                     <RotateCcw className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="font-medium">Easy Returns</p>
-                    <p className="text-sm text-muted-foreground">7-day hassle-free returns</p>
+                    <p className="font-medium">3 Days Return</p>
+                    <p className="text-sm text-muted-foreground">Easy return policy</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export default function ProductDetail() {
                   </div>
                   <div>
                     <p className="font-medium">100% Authentic</p>
-                    <p className="text-sm text-muted-foreground">Genuine products guaranteed</p>
+                    <p className="text-sm text-muted-foreground">Genuine products</p>
                   </div>
                 </div>
               </div>
