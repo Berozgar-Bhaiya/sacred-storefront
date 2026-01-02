@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead } from "@/components/SEOHead";
+import { ProductJsonLd } from "@/components/ProductJsonLd";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus } from "lucide-react";
@@ -91,6 +92,18 @@ export default function ProductDetail() {
         title={product.name}
         description={product.description || `Buy ${product.name} - authentic Hindu puja item. Cash on Delivery across India.`}
         keywords={`${product.name}, puja items, hindu religious items, ${(product.categories as any)?.name || ""}`}
+      />
+      <ProductJsonLd 
+        product={{
+          name: product.name,
+          description: product.description,
+          price: Number(product.price),
+          original_price: product.original_price ? Number(product.original_price) : null,
+          image_urls: product.image_urls,
+          stock_status: product.stock_status,
+          slug: product.slug,
+        }}
+        categoryName={(product.categories as any)?.name}
       />
       <div className="container py-8 md:py-12">
         {/* Breadcrumb */}
