@@ -73,6 +73,7 @@ export default {
         },
         cream: "hsl(var(--cream))",
         "temple-red": "hsl(var(--temple-red))",
+        copper: "hsl(var(--copper))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,8 +81,8 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        display: ["Playfair Display", "serif"],
-        body: ["Poppins", "sans-serif"],
+        display: ["Cormorant Garamond", "Georgia", "serif"],
+        body: ["Nunito Sans", "system-ui", "sans-serif"],
       },
       keyframes: {
         "accordion-down": {
