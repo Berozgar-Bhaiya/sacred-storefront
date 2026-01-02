@@ -40,7 +40,7 @@ export default function Checkout() {
   });
 
   const totalPrice = getTotalPrice();
-  const deliveryCharge = totalPrice >= 499 ? 0 : 49;
+  const deliveryCharge = 49;
   const finalTotal = totalPrice + deliveryCharge;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -300,9 +300,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Delivery</span>
-                    <span className={deliveryCharge === 0 ? "text-green-600" : ""}>
-                      {deliveryCharge === 0 ? "FREE" : `₹${deliveryCharge}`}
-                    </span>
+                    <span>₹{deliveryCharge}</span>
                   </div>
                   <div className="flex justify-between text-lg font-semibold text-foreground pt-2 border-t border-border">
                     <span>Total</span>
