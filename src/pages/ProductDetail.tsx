@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/layout/Layout";
+import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus } from "lucide-react";
@@ -82,10 +83,15 @@ export default function ProductDetail() {
     );
   }
 
-  const images = product.image_urls?.length ? product.image_urls : ["https://via.placeholder.com/600"];
+  const images = product.image_urls?.length ? product.image_urls : ["/placeholder.svg"];
 
   return (
     <Layout>
+      <SEOHead 
+        title={product.name}
+        description={product.description || `Buy ${product.name} - authentic Hindu puja item. Cash on Delivery across India.`}
+        keywords={`${product.name}, puja items, hindu religious items, ${(product.categories as any)?.name || ""}`}
+      />
       <div className="container py-8 md:py-12">
         {/* Breadcrumb */}
         <nav className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">

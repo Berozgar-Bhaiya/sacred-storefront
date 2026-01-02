@@ -53,22 +53,22 @@ export function HeroSection() {
           </div>
 
           {/* Trust badges */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: "0.3s" }}>
             <div className="flex items-center gap-2">
               <span className="text-lg">✓</span>
               <span>100% Authentic</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-lg">🚚</span>
-              <span>Free Shipping ₹499+</span>
+              <span>All India Delivery</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-lg">🔒</span>
-              <span>Secure Payments</span>
+              <span className="text-lg">💵</span>
+              <span>Cash on Delivery</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-lg">🇮🇳</span>
-              <span>Made for India</span>
+              <span>Made in India</span>
             </div>
           </div>
         </div>

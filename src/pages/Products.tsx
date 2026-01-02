@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/layout/Layout";
+import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -163,15 +164,22 @@ export default function Products() {
     </div>
   );
 
+  const categoryName = selectedCategory
+    ? categories?.find((c) => c.slug === selectedCategory)?.name || "Products"
+    : "All Products";
+
   return (
     <Layout>
+      <SEOHead 
+        title={categoryName}
+        description={`Shop ${categoryName.toLowerCase()} - authentic Hindu puja items and religious essentials. Quality products with Cash on Delivery across India.`}
+        keywords={`${categoryName.toLowerCase()}, puja items, hindu religious items, india`}
+      />
       <div className="container py-8 md:py-12">
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-            {selectedCategory
-              ? categories?.find((c) => c.slug === selectedCategory)?.name || "Products"
-              : "All Products"}
+            {categoryName}
           </h1>
           <p className="mt-2 text-muted-foreground">
             {products?.length || 0} products found
