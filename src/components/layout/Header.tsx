@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart, User, Menu, X, Search } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Search, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -15,6 +23,7 @@ const navLinks = [
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, signOut, loading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -67,12 +76,54 @@ export function Header() {
             </Button>
           </Link>
 
-          <Link to="/auth">
-            <Button variant="outline" size="sm" className="hidden md:flex">
-              <User className="mr-2 h-4 w-4" />
-              Sign In
-            </Button>
-          </Link>
+          {!loading && (
+            user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="hidden md:flex">
+                    <User className="mr-2 h-4 w-4" />
+                    {user.email?.split("@")[0]}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/account" className="flex items-center">
+                      <User className="mr-2 h-4 w-4" />
+                      My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/orders" className="flex items-center">
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      My Orders
+                    </Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center text-primary">
+                          Admin Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut} className="text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="outline" size="sm" className="hidden md:flex">
+                  <User className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+              </Link>
+            )
+          )}
 
           {/* Mobile Menu Toggle */}
           <Button
@@ -105,12 +156,34 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-              <Button variant="outline" className="mt-2 w-full">
-                <User className="mr-2 h-4 w-4" />
-                Sign In
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to="/account" onClick={() => setIsMenuOpen(false)}>
+                  <Button variant="outline" className="mt-2 w-full">
+                    <User className="mr-2 h-4 w-4" />
+                    My Account
+                  </Button>
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                    <Button variant="saffron" className="mt-2 w-full">
+                      Admin Dashboard
+                    </Button>
+                  </Link>
+                )}
+                <Button variant="ghost" className="mt-2 w-full text-destructive" onClick={signOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="outline" className="mt-2 w-full">
+                  <User className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </nav>
         </div>
       )}
