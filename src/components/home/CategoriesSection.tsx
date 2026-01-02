@@ -1,52 +1,49 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
-
-const categories = [
-  {
-    id: "puja-items",
-    name: "Puja Items",
-    description: "Essential items for daily worship",
-    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=400&fit=crop",
-    color: "from-primary/20 to-saffron-light/20",
-  },
-  {
-    id: "idols",
-    name: "Idols & Murtis",
-    description: "Handcrafted divine sculptures",
-    image: "https://images.unsplash.com/photo-1567591370504-80e1bd6d531a?w=400&h=400&fit=crop",
-    color: "from-gold/20 to-gold-light/20",
-  },
-  {
-    id: "rudraksha",
-    name: "Rudraksha",
-    description: "Sacred seeds for spiritual growth",
-    image: "https://images.unsplash.com/photo-1609619385076-36a873425636?w=400&h=400&fit=crop",
-    color: "from-secondary/20 to-maroon-light/20",
-  },
-  {
-    id: "incense",
-    name: "Incense & Dhoop",
-    description: "Premium fragrances for worship",
-    image: "https://images.unsplash.com/photo-1602615576820-ea14cf3e476a?w=400&h=400&fit=crop",
-    color: "from-primary/20 to-gold/20",
-  },
-  {
-    id: "books",
-    name: "Books & Scriptures",
-    description: "Sacred texts and spiritual guides",
-    image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=400&fit=crop",
-    color: "from-saffron-light/20 to-primary/20",
-  },
-  {
-    id: "accessories",
-    name: "Accessories",
-    description: "Complete your puja setup",
-    image: "https://images.unsplash.com/photo-1602615580829-fa75c7b98527?w=400&h=400&fit=crop",
-    color: "from-gold-light/20 to-gold/20",
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function CategoriesSection() {
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("categories")
+        .select("*")
+        .order("name");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const categoryColors = [
+    "from-primary/20 to-saffron-light/20",
+    "from-gold/20 to-gold-light/20",
+    "from-secondary/20 to-maroon-light/20",
+    "from-primary/20 to-gold/20",
+    "from-saffron-light/20 to-primary/20",
+    "from-gold-light/20 to-gold/20",
+  ];
+
+  if (isLoading) {
+    return (
+      <section className="py-16 md:py-24">
+        <div className="container">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <Skeleton className="mx-auto h-10 w-64" />
+            <Skeleton className="mx-auto mt-4 h-6 w-96" />
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="h-32 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 md:py-24">
       <div className="container">
@@ -62,15 +59,15 @@ export function CategoriesSection() {
 
         {/* Categories Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((category, index) => (
+          {categories?.map((category, index) => (
             <Link
               key={category.id}
-              to={`/products?category=${category.id}`}
+              to={`/products?category=${category.slug}`}
               className="group relative overflow-hidden rounded-2xl shadow-card transition-all duration-300 hover:shadow-lg animate-fade-in-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Background Gradient */}
-              <div className={cn("absolute inset-0 bg-gradient-to-br", category.color)} />
+              <div className={cn("absolute inset-0 bg-gradient-to-br", categoryColors[index % categoryColors.length])} />
               
               {/* Content */}
               <div className="relative flex items-center gap-4 p-6">
@@ -78,17 +75,19 @@ export function CategoriesSection() {
                   <h3 className="font-display text-xl font-semibold text-foreground group-hover:text-primary transition-colors">
                     {category.name}
                   </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
+                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                     {category.description}
                   </p>
                 </div>
-                <div className="h-20 w-20 overflow-hidden rounded-xl shadow-sm">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                  />
-                </div>
+                {category.image_url && (
+                  <div className="h-20 w-20 overflow-hidden rounded-xl shadow-sm flex-shrink-0">
+                    <img
+                      src={category.image_url}
+                      alt={category.name}
+                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                  </div>
+                )}
               </div>
             </Link>
           ))}

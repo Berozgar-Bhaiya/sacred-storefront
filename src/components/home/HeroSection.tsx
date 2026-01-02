@@ -45,7 +45,7 @@ export function HeroSection() {
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/categories">
+            <Link to="/products">
               <Button variant="outline" size="xl">
                 Browse Categories
               </Button>
@@ -67,8 +67,8 @@ export function HeroSection() {
               <span>Secure Payments</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-lg">⭐</span>
-              <span>50,000+ Happy Devotees</span>
+              <span className="text-lg">🇮🇳</span>
+              <span>Made for India</span>
             </div>
           </div>
         </div>
