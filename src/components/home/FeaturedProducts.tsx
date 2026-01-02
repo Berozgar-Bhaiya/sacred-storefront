@@ -1,53 +1,63 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-// Mock featured products data
-const featuredProducts = [
-  {
-    id: "1",
-    name: "Brass Ganesh Idol",
-    price: 2499,
-    originalPrice: 2999,
-    image: "https://images.unsplash.com/photo-1567591370504-80e1bd6d531a?w=400&h=400&fit=crop",
-    rating: 4.8,
-    reviews: 156,
-    badge: "Bestseller",
-  },
-  {
-    id: "2",
-    name: "Premium Rudraksha Mala",
-    price: 1299,
-    originalPrice: 1599,
-    image: "https://images.unsplash.com/photo-1609619385076-36a873425636?w=400&h=400&fit=crop",
-    rating: 4.9,
-    reviews: 234,
-    badge: "Top Rated",
-  },
-  {
-    id: "3",
-    name: "Copper Kalash Set",
-    price: 1899,
-    originalPrice: 2299,
-    image: "https://images.unsplash.com/photo-1602615576820-ea14cf3e476a?w=400&h=400&fit=crop",
-    rating: 4.7,
-    reviews: 89,
-    badge: null,
-  },
-  {
-    id: "4",
-    name: "Sandalwood Dhoop Cones",
-    price: 349,
-    originalPrice: 449,
-    image: "https://images.unsplash.com/photo-1602615580829-fa75c7b98527?w=400&h=400&fit=crop",
-    rating: 4.6,
-    reviews: 312,
-    badge: "New",
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { useCart } from "@/hooks/useCart";
+import { useToast } from "@/hooks/use-toast";
 
 export function FeaturedProducts() {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const { data: products, isLoading } = useQuery({
+    queryKey: ["featured-products"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("featured", true)
+        .eq("stock_status", "in_stock")
+        .limit(4);
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const handleAddToCart = (product: any) => {
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: Number(product.price),
+      image: product.image_urls?.[0] || "",
+      slug: product.slug,
+    });
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <section className="bg-card py-16 md:py-24">
+        <div className="container">
+          <div className="mb-12 flex items-center justify-between">
+            <Skeleton className="h-10 w-64" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-80 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-card py-16 md:py-24">
       <div className="container">
@@ -62,68 +72,53 @@ export function FeaturedProducts() {
             </p>
           </div>
           <Link to="/products">
-            <Button variant="outline">
-              View All Products
-            </Button>
+            <Button variant="outline">View All Products</Button>
           </Link>
         </div>
 
         {/* Products Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featuredProducts.map((product, index) => (
+          {products?.map((product, index) => (
             <div
               key={product.id}
               className="group relative overflow-hidden rounded-2xl bg-background shadow-card transition-all duration-300 hover:shadow-lg animate-fade-in-up"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {/* Image Container */}
-              <div className="relative aspect-square overflow-hidden">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                
-                {/* Badge */}
-                {product.badge && (
-                  <span className={cn(
-                    "absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold",
-                    product.badge === "Bestseller" && "bg-primary text-primary-foreground",
-                    product.badge === "Top Rated" && "bg-gold text-foreground",
-                    product.badge === "New" && "bg-secondary text-secondary-foreground"
-                  )}>
-                    {product.badge}
-                  </span>
-                )}
+              <Link to={`/products/${product.slug}`} className="block">
+                <div className="relative aspect-square overflow-hidden">
+                  <img
+                    src={product.image_urls?.[0] || "https://via.placeholder.com/400"}
+                    alt={product.name}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  
+                  {/* Badge */}
+                  {product.original_price && Number(product.original_price) > Number(product.price) && (
+                    <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                      {Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)}% OFF
+                    </span>
+                  )}
 
-                {/* Wishlist Button */}
-                <button className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-background hover:text-destructive">
-                  <Heart className="h-5 w-5" />
-                </button>
-
-                {/* Quick Add */}
-                <div className="absolute bottom-0 left-0 right-0 translate-y-full bg-gradient-to-t from-background/90 to-transparent p-4 transition-transform duration-300 group-hover:translate-y-0">
-                  <Button variant="saffron" className="w-full">
-                    <ShoppingCart className="h-4 w-4" />
-                    Add to Cart
-                  </Button>
+                  {/* Wishlist Button */}
+                  <button className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-background hover:text-destructive">
+                    <Heart className="h-5 w-5" />
+                  </button>
                 </div>
-              </div>
+              </Link>
 
               {/* Content */}
               <div className="p-4">
                 {/* Rating */}
                 <div className="mb-2 flex items-center gap-1">
                   <Star className="h-4 w-4 fill-gold text-gold" />
-                  <span className="text-sm font-medium">{product.rating}</span>
-                  <span className="text-sm text-muted-foreground">
-                    ({product.reviews})
-                  </span>
+                  <span className="text-sm font-medium">4.8</span>
+                  <span className="text-sm text-muted-foreground">(50+)</span>
                 </div>
 
                 {/* Title */}
-                <Link to={`/products/${product.id}`}>
-                  <h3 className="font-display text-lg font-semibold text-foreground transition-colors hover:text-primary">
+                <Link to={`/products/${product.slug}`}>
+                  <h3 className="font-display text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-1">
                     {product.name}
                   </h3>
                 </Link>
@@ -131,15 +126,24 @@ export function FeaturedProducts() {
                 {/* Price */}
                 <div className="mt-2 flex items-center gap-2">
                   <span className="text-xl font-bold text-primary">
-                    ₹{product.price.toLocaleString("en-IN")}
+                    ₹{Number(product.price).toLocaleString("en-IN")}
                   </span>
-                  <span className="text-sm text-muted-foreground line-through">
-                    ₹{product.originalPrice.toLocaleString("en-IN")}
-                  </span>
-                  <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
-                    {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
-                  </span>
+                  {product.original_price && (
+                    <span className="text-sm text-muted-foreground line-through">
+                      ₹{Number(product.original_price).toLocaleString("en-IN")}
+                    </span>
+                  )}
                 </div>
+
+                {/* Add to Cart Button */}
+                <Button
+                  variant="saffron"
+                  className="mt-4 w-full"
+                  onClick={() => handleAddToCart(product)}
+                >
+                  <ShoppingCart className="mr-2 h-4 w-4" />
+                  Add to Cart
+                </Button>
               </div>
             </div>
           ))}
