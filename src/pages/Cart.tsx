@@ -9,7 +9,7 @@ export default function Cart() {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
 
   const totalPrice = getTotalPrice();
-  const deliveryCharge = totalPrice >= 499 ? 0 : 49;
+  const deliveryCharge = 49;
   const finalTotal = totalPrice + deliveryCharge;
 
   if (items.length === 0) {
@@ -137,15 +137,8 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Delivery</span>
-                  <span className={deliveryCharge === 0 ? "text-green-600" : ""}>
-                    {deliveryCharge === 0 ? "FREE" : `₹${deliveryCharge}`}
-                  </span>
+                  <span>₹{deliveryCharge}</span>
                 </div>
-                {deliveryCharge > 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Add ₹{499 - totalPrice} more for free delivery
-                  </p>
-                )}
                 <div className="border-t border-border pt-4">
                   <div className="flex justify-between text-lg font-semibold text-foreground">
                     <span>Total</span>
