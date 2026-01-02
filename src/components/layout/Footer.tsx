@@ -3,25 +3,21 @@ import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from "luci
 
 const footerLinks = {
   shop: [
-    { label: "Puja Items", href: "/products?category=puja-items" },
+    { label: "All Products", href: "/products" },
+    { label: "Diya & Lamps", href: "/products?category=diya" },
+    { label: "Agarbatti", href: "/products?category=agarbatti" },
+    { label: "Pooja Kits", href: "/products?category=pooja-kits" },
     { label: "Idols & Murtis", href: "/products?category=idols" },
-    { label: "Books & Scriptures", href: "/products?category=books" },
-    { label: "Incense & Dhoop", href: "/products?category=incense" },
-    { label: "Rudraksha", href: "/products?category=rudraksha" },
   ],
   support: [
-    { label: "Contact Us", href: "/contact" },
-    { label: "FAQs", href: "/faq" },
-    { label: "Shipping Info", href: "/shipping" },
-    { label: "Returns Policy", href: "/returns" },
-    { label: "Track Order", href: "/track-order" },
+    { label: "My Orders", href: "/orders" },
+    { label: "My Cart", href: "/cart" },
+    { label: "Sign In", href: "/auth" },
   ],
-  company: [
-    { label: "About Us", href: "/about" },
-    { label: "Our Story", href: "/our-story" },
-    { label: "Blog", href: "/blog" },
-    { label: "Careers", href: "/careers" },
-    { label: "Privacy Policy", href: "/privacy" },
+  legal: [
+    { label: "3 Days Return Policy", href: "#" },
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
   ],
 };
 
@@ -118,12 +114,12 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Legal Links */}
           <div>
-            <h3 className="font-display text-lg font-semibold text-foreground">Company</h3>
+            <h3 className="font-display text-lg font-semibold text-foreground">Legal</h3>
             <ul className="mt-4 space-y-2">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
+              {footerLinks.legal.map((link) => (
+                <li key={link.label}>
                   <Link
                     to={link.href}
                     className="text-sm text-muted-foreground transition-colors hover:text-primary"
@@ -141,10 +137,10 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="container flex flex-col items-center justify-between gap-4 py-6 md:flex-row">
           <p className="text-center text-sm text-muted-foreground">
-            © 2024 Puja Bhandar. All rights reserved. Made with 🙏 in India.
+            © {new Date().getFullYear()} Puja Bhandar. All rights reserved. Made with 🙏 in India.
           </p>
-          <div className="flex items-center gap-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Razorpay_logo.svg/1280px-Razorpay_logo.svg.png" alt="Razorpay" className="h-6 opacity-60" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>💵 Cash on Delivery Available</span>
           </div>
         </div>
       </div>
