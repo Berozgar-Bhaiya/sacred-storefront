@@ -117,12 +117,11 @@ export default function Checkout() {
 
       if (itemsError) throw itemsError;
 
-      // For demo purposes, simulate successful payment
-      // In production, integrate with Razorpay here
+      // COD order - payment will be collected on delivery
+      // Update order status to confirmed
       await supabase
         .from("orders")
         .update({ 
-          payment_status: "paid",
           order_status: "confirmed" 
         })
         .eq("id", order.id);
@@ -134,7 +133,7 @@ export default function Checkout() {
         description: `Order ID: ${order.id.slice(0, 8).toUpperCase()}`,
       });
 
-      navigate("/orders");
+      navigate(`/order-confirmation/${order.id}`);
     } catch (error: any) {
       console.error("Checkout error:", error);
       toast({
