@@ -1,11 +1,4 @@
-@import "@fontsource/playfair-display/400.css";
-@import "@fontsource/playfair-display/500.css";
-@import "@fontsource/playfair-display/600.css";
-@import "@fontsource/playfair-display/700.css";
-@import "@fontsource/poppins/300.css";
-@import "@fontsource/poppins/400.css";
-@import "@fontsource/poppins/500.css";
-@import "@fontsource/poppins/600.css";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,500;0,6..12,600;1,6..12,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,110 +6,113 @@
 
 @layer base {
   :root {
-    /* Devotional color palette - warm saffron, maroon, gold */
-    --background: 30 50% 98%;
-    --foreground: 20 25% 15%;
+    /* Premium Spiritual Theme - Off-white/Beige base */
+    --background: 40 33% 96%;
+    --foreground: 20 30% 12%;
 
-    --card: 35 40% 97%;
-    --card-foreground: 20 25% 15%;
+    --card: 42 35% 97%;
+    --card-foreground: 20 30% 12%;
 
-    --popover: 30 50% 98%;
-    --popover-foreground: 20 25% 15%;
+    --popover: 42 35% 97%;
+    --popover-foreground: 20 30% 12%;
 
-    /* Primary: Sacred Saffron */
-    --primary: 25 95% 53%;
+    /* Primary: Sacred Saffron - Rich orange */
+    --primary: 28 92% 50%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary: Deep Maroon */
-    --secondary: 350 65% 25%;
-    --secondary-foreground: 35 100% 97%;
+    /* Secondary: Deep Maroon - Temple red */
+    --secondary: 350 70% 22%;
+    --secondary-foreground: 40 30% 96%;
 
-    /* Muted: Warm cream */
-    --muted: 35 30% 93%;
-    --muted-foreground: 20 15% 45%;
+    /* Muted: Warm sand */
+    --muted: 38 28% 90%;
+    --muted-foreground: 25 18% 42%;
 
-    /* Accent: Brass Gold */
-    --accent: 42 85% 55%;
-    --accent-foreground: 20 25% 15%;
+    /* Accent: Brass Gold - Regal */
+    --accent: 45 85% 48%;
+    --accent-foreground: 20 30% 12%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 25% 88%;
-    --input: 35 25% 88%;
-    --ring: 25 95% 53%;
+    --border: 38 22% 85%;
+    --input: 38 22% 85%;
+    --ring: 28 92% 50%;
 
-    --radius: 0.75rem;
+    --radius: 0.625rem;
 
-    /* Custom tokens */
-    --saffron: 25 95% 53%;
-    --saffron-light: 30 90% 70%;
-    --saffron-dark: 20 90% 45%;
-    --maroon: 350 65% 25%;
-    --maroon-light: 350 55% 40%;
-    --gold: 42 85% 55%;
-    --gold-light: 45 80% 70%;
-    --cream: 35 40% 97%;
-    --temple-red: 5 75% 35%;
+    /* Custom spiritual tokens */
+    --saffron: 28 92% 50%;
+    --saffron-light: 32 88% 62%;
+    --saffron-dark: 24 88% 42%;
+    --maroon: 350 70% 22%;
+    --maroon-light: 350 58% 35%;
+    --gold: 45 85% 48%;
+    --gold-light: 48 78% 62%;
+    --cream: 42 35% 97%;
+    --temple-red: 8 72% 32%;
+    --copper: 25 60% 45%;
 
-    /* Gradients */
-    --gradient-saffron: linear-gradient(135deg, hsl(25 95% 53%) 0%, hsl(35 90% 60%) 100%);
-    --gradient-devotional: linear-gradient(180deg, hsl(35 40% 97%) 0%, hsl(30 50% 92%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(42 85% 55%) 0%, hsl(38 75% 45%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(25 95% 53% / 0.1) 0%, hsl(35 40% 97%) 100%);
+    /* Premium Gradients */
+    --gradient-saffron: linear-gradient(135deg, hsl(28 92% 50%) 0%, hsl(35 88% 58%) 100%);
+    --gradient-devotional: linear-gradient(180deg, hsl(42 35% 97%) 0%, hsl(38 30% 93%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 85% 48%) 0%, hsl(40 70% 40%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(28 92% 50% / 0.08) 0%, hsl(40 33% 96%) 100%);
+    --gradient-maroon: linear-gradient(135deg, hsl(350 70% 22%) 0%, hsl(350 58% 32%) 100%);
 
-    /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(25 95% 53% / 0.15);
-    --shadow-card: 0 2px 12px -2px hsl(20 25% 15% / 0.08);
-    --shadow-gold: 0 4px 24px -4px hsl(42 85% 55% / 0.3);
+    /* Elegant Shadows */
+    --shadow-soft: 0 4px 24px -6px hsl(28 92% 50% / 0.18);
+    --shadow-card: 0 2px 16px -4px hsl(20 30% 12% / 0.08);
+    --shadow-gold: 0 6px 28px -6px hsl(45 85% 48% / 0.35);
+    --shadow-elevated: 0 8px 32px -8px hsl(20 30% 12% / 0.12);
 
-    --sidebar-background: 35 40% 97%;
-    --sidebar-foreground: 20 25% 25%;
-    --sidebar-primary: 25 95% 53%;
+    --sidebar-background: 42 35% 97%;
+    --sidebar-foreground: 20 30% 20%;
+    --sidebar-primary: 28 92% 50%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 35 30% 93%;
-    --sidebar-accent-foreground: 20 25% 15%;
-    --sidebar-border: 35 25% 88%;
-    --sidebar-ring: 25 95% 53%;
+    --sidebar-accent: 38 28% 90%;
+    --sidebar-accent-foreground: 20 30% 12%;
+    --sidebar-border: 38 22% 85%;
+    --sidebar-ring: 28 92% 50%;
   }
 
   .dark {
-    --background: 20 30% 8%;
-    --foreground: 35 30% 95%;
+    --background: 20 25% 7%;
+    --foreground: 38 28% 92%;
 
-    --card: 20 25% 12%;
-    --card-foreground: 35 30% 95%;
+    --card: 20 22% 10%;
+    --card-foreground: 38 28% 92%;
 
-    --popover: 20 25% 12%;
-    --popover-foreground: 35 30% 95%;
+    --popover: 20 22% 10%;
+    --popover-foreground: 38 28% 92%;
 
-    --primary: 25 90% 55%;
-    --primary-foreground: 20 30% 8%;
+    --primary: 28 88% 52%;
+    --primary-foreground: 20 25% 7%;
 
-    --secondary: 350 50% 35%;
-    --secondary-foreground: 35 100% 97%;
+    --secondary: 350 55% 32%;
+    --secondary-foreground: 40 30% 96%;
 
-    --muted: 20 20% 18%;
-    --muted-foreground: 35 20% 65%;
+    --muted: 20 18% 16%;
+    --muted-foreground: 38 22% 60%;
 
-    --accent: 42 80% 50%;
-    --accent-foreground: 20 30% 8%;
+    --accent: 45 78% 45%;
+    --accent-foreground: 20 25% 7%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 20 20% 20%;
-    --input: 20 20% 20%;
-    --ring: 25 90% 55%;
+    --border: 20 18% 18%;
+    --input: 20 18% 18%;
+    --ring: 28 88% 52%;
 
-    --sidebar-background: 20 25% 10%;
-    --sidebar-foreground: 35 30% 90%;
-    --sidebar-primary: 25 90% 55%;
-    --sidebar-primary-foreground: 20 30% 8%;
-    --sidebar-accent: 20 20% 18%;
-    --sidebar-accent-foreground: 35 30% 95%;
-    --sidebar-border: 20 20% 20%;
-    --sidebar-ring: 25 90% 55%;
+    --sidebar-background: 20 22% 9%;
+    --sidebar-foreground: 38 28% 88%;
+    --sidebar-primary: 28 88% 52%;
+    --sidebar-primary-foreground: 20 25% 7%;
+    --sidebar-accent: 20 18% 16%;
+    --sidebar-accent-foreground: 38 28% 92%;
+    --sidebar-border: 20 18% 18%;
+    --sidebar-ring: 28 88% 52%;
   }
 }
 
@@ -127,21 +123,24 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 }
 
 @layer utilities {
   .font-display {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', Georgia, serif;
   }
 
   .font-body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito Sans', system-ui, sans-serif;
   }
 
   .gradient-saffron {
@@ -160,6 +159,10 @@
     background: var(--gradient-hero);
   }
 
+  .gradient-maroon {
+    background: var(--gradient-maroon);
+  }
+
   .shadow-soft {
     box-shadow: var(--shadow-soft);
   }
@@ -172,9 +175,13 @@
     box-shadow: var(--shadow-gold);
   }
 
-  /* Decorative mandala pattern overlay */
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  /* Decorative mandala pattern - subtle and elegant */
   .mandala-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d97706' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c47f17' fill-opacity='0.04'%3E%3Ccircle cx='40' cy='40' r='20' stroke='%23c47f17' stroke-width='0.5' fill='none'/%3E%3Ccircle cx='40' cy='40' r='12' stroke='%23c47f17' stroke-width='0.5' fill='none'/%3E%3Cpath d='M40 20 L44 40 L40 60 L36 40 Z' stroke='%23c47f17' stroke-width='0.3'/%3E%3Cpath d='M20 40 L40 44 L60 40 L40 36 Z' stroke='%23c47f17' stroke-width='0.3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 
   /* Lotus border decoration */
@@ -182,16 +189,27 @@
     border-image: linear-gradient(90deg, transparent, hsl(var(--gold)), transparent) 1;
   }
 
+  /* Om symbol decorative element */
+  .om-decoration::before {
+    content: "ॐ";
+    @apply text-gold/20 text-6xl font-display;
+  }
+
   /* Smooth transitions */
   .transition-devotional {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Premium text shadow */
+  .text-shadow-gold {
+    text-shadow: 0 2px 12px hsl(var(--gold) / 0.25);
   }
 }
 
-/* Custom scrollbar */
+/* Elegant scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -199,10 +217,16 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--primary) / 0.5);
-  border-radius: 4px;
+  background: hsl(var(--primary) / 0.4);
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.7);
+  background: hsl(var(--primary) / 0.6);
+}
+
+/* Selection color */
+::selection {
+  background: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
 }
