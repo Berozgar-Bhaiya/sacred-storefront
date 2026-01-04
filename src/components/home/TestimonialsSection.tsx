@@ -1,11 +1,14 @@
 import { Star } from "lucide-react";
+import testimonial1 from "@/assets/testimonial-1.png";
+import testimonial2 from "@/assets/testimonial-2.png";
+import testimonial3 from "@/assets/testimonial-3.png";
 
 const testimonials = [
   {
     id: 1,
     name: "Priya Sharma",
     location: "Mumbai, Maharashtra",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+    image: testimonial1,
     rating: 5,
     text: "The brass Ganesh idol I ordered is absolutely stunning. The craftsmanship is exceptional and the delivery was quick. Truly blessed to have found Puja Bhandar!",
   },
@@ -13,7 +16,7 @@ const testimonials = [
     id: 2,
     name: "Rajesh Kumar",
     location: "Delhi",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+    image: testimonial2,
     rating: 5,
     text: "Been ordering puja items from here for over a year. The quality is consistent and prices are very reasonable. Highly recommended for all devotees.",
   },
@@ -21,7 +24,7 @@ const testimonials = [
     id: 3,
     name: "Anita Devi",
     location: "Varanasi, UP",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
+    image: testimonial3,
     rating: 5,
     text: "The rudraksha mala I received is authentic and beautifully energized. Customer service is excellent. Thank you for bringing such sacred items to our homes.",
   },
