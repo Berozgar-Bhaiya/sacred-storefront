@@ -10,7 +10,7 @@ import {
   ShoppingBag,
   LogOut,
   Menu,
-  X,
+  Settings,
 } from "lucide-react";
 
 const navItems = [
@@ -18,6 +18,7 @@ const navItems = [
   { title: "Products", path: "/admin/products", icon: Package },
   { title: "Categories", path: "/admin/categories", icon: FolderOpen },
   { title: "Orders", path: "/admin/orders", icon: ShoppingBag },
+  { title: "Settings", path: "/admin/settings", icon: Settings },
 ];
 
 export default function AdminLayout() {

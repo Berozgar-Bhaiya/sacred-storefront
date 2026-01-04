@@ -1,6 +1,7 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEOHead } from "@/components/SEOHead";
 import { OrganizationJsonLd } from "@/components/OrganizationJsonLd";
+import { CouponBanner } from "@/components/home/CouponBanner";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturesBar } from "@/components/home/FeaturesBar";
 import { CategoriesSection } from "@/components/home/CategoriesSection";
@@ -17,6 +18,7 @@ const Index = () => {
         keywords="puja items, hindu religious items, brass idols, diya, agarbatti, pooja kit, rudraksha, ganesh murti, puja samagri, india"
       />
       <OrganizationJsonLd />
+      <CouponBanner />
       <HeroSection />
       <FeaturesBar />
       <CategoriesSection />
