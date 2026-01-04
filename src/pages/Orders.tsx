@@ -71,8 +71,8 @@ function OrderTimeline({ currentStatus }: { currentStatus: string }) {
   }
 
   return (
-    <div className="py-4">
-      <div className="flex items-center justify-between">
+    <div className="py-4 overflow-x-auto">
+      <div className="flex items-center justify-between min-w-[280px]">
         {orderSteps.map((step, index) => {
           const config = statusConfig[step];
           const isCompleted = index <= currentIndex;
@@ -83,7 +83,7 @@ function OrderTimeline({ currentStatus }: { currentStatus: string }) {
               <div className="flex flex-col items-center">
                 <div
                   className={`
-                    flex h-10 w-10 items-center justify-center rounded-full transition-all duration-500
+                    flex h-8 w-8 md:h-10 md:w-10 items-center justify-center rounded-full transition-all duration-500
                     ${isCompleted 
                       ? `${config.bgColor} ${config.color}` 
                       : "bg-muted text-muted-foreground"
@@ -94,14 +94,16 @@ function OrderTimeline({ currentStatus }: { currentStatus: string }) {
                     animationDelay: `${index * 150}ms`,
                   }}
                 >
-                  {config.icon}
+                  <span className="[&>svg]:h-4 [&>svg]:w-4 md:[&>svg]:h-5 md:[&>svg]:w-5">
+                    {config.icon}
+                  </span>
                 </div>
-                <span className={`mt-2 text-xs font-medium capitalize ${isCompleted ? config.color : "text-muted-foreground"}`}>
+                <span className={`mt-2 text-[10px] md:text-xs font-medium capitalize ${isCompleted ? config.color : "text-muted-foreground"}`}>
                   {step}
                 </span>
               </div>
               {index < orderSteps.length - 1 && (
-                <div className="mx-2 h-0.5 flex-1">
+                <div className="mx-1 md:mx-2 h-0.5 flex-1">
                   <div
                     className={`h-full transition-all duration-700 ${
                       index < currentIndex ? "bg-primary" : "bg-muted"
@@ -166,8 +168,8 @@ export default function Orders() {
 
   return (
     <Layout>
-      <div className="container py-8 md:py-12">
-        <h1 className="mb-8 font-display text-3xl font-bold text-foreground md:text-4xl">
+      <div className="container py-6 md:py-12">
+        <h1 className="mb-6 md:mb-8 font-display text-2xl font-bold text-foreground md:text-4xl">
           My Orders
         </h1>
 
@@ -195,23 +197,23 @@ export default function Orders() {
               return (
                 <div
                   key={order.id}
-                  className="rounded-2xl border border-border bg-card p-6 cursor-pointer hover:shadow-lg transition-all duration-300 animate-fade-in group"
+                  className="rounded-xl md:rounded-2xl border border-border bg-card p-4 md:p-6 cursor-pointer hover:shadow-lg transition-all duration-300 animate-fade-in group"
                   style={{ animationDelay: `${index * 100}ms` }}
                   onClick={() => viewOrderDetails(order)}
                 >
                   {/* Status Banner */}
-                  <div className={`-mx-6 -mt-6 mb-4 px-6 py-3 ${config.bgColor} rounded-t-2xl`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`${config.color}`}>
+                  <div className={`-mx-4 md:-mx-6 -mt-4 md:-mt-6 mb-4 px-4 md:px-6 py-2 md:py-3 ${config.bgColor} rounded-t-xl md:rounded-t-2xl`}>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                        <div className={`${config.color} flex-shrink-0`}>
                           {config.icon}
                         </div>
-                        <div>
-                          <p className={`font-semibold ${config.color}`}>{config.message}</p>
-                          <p className="text-sm text-muted-foreground">{config.description}</p>
+                        <div className="min-w-0">
+                          <p className={`font-semibold text-sm md:text-base ${config.color}`}>{config.message}</p>
+                          <p className="text-xs md:text-sm text-muted-foreground truncate">{config.description}</p>
                         </div>
                       </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                      <ChevronRight className="h-5 w-5 flex-shrink-0 text-muted-foreground group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
 

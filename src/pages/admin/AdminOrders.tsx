@@ -146,12 +146,12 @@ export default function AdminOrders() {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Orders</h1>
-          <p className="mt-1 text-muted-foreground">Manage customer orders</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Orders</h1>
+          <p className="mt-1 text-sm md:text-base text-muted-foreground">Manage customer orders</p>
         </div>
-        <Button variant="outline" onClick={exportToCSV}>
+        <Button variant="outline" onClick={exportToCSV} className="w-full sm:w-auto">
           <Download className="mr-2 h-4 w-4" />
           Export CSV
         </Button>

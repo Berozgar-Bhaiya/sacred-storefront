@@ -153,32 +153,32 @@ export default function ProductDetail() {
             </Link>
 
             {/* Title */}
-            <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+            <h1 className="font-display text-2xl font-bold text-foreground sm:text-3xl md:text-4xl">
               {product.name}
             </h1>
 
             {/* Rating */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-gold text-gold" />
+                  <Star key={i} className="h-4 w-4 md:h-5 md:w-5 fill-gold text-gold" />
                 ))}
               </div>
-              <span className="font-medium">4.8</span>
-              <span className="text-muted-foreground">(156 reviews)</span>
+              <span className="font-medium text-sm md:text-base">4.8</span>
+              <span className="text-muted-foreground text-sm md:text-base">(156 reviews)</span>
             </div>
 
             {/* Price */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-primary">
+            <div className="flex flex-wrap items-baseline gap-2 md:gap-3">
+              <span className="text-2xl md:text-3xl font-bold text-primary">
                 ₹{Number(product.price).toLocaleString("en-IN")}
               </span>
               {product.original_price && (
                 <>
-                  <span className="text-xl text-muted-foreground line-through">
+                  <span className="text-lg md:text-xl text-muted-foreground line-through">
                     ₹{Number(product.original_price).toLocaleString("en-IN")}
                   </span>
-                  <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                  <span className="rounded-full bg-green-100 px-2 md:px-3 py-1 text-xs md:text-sm font-medium text-green-700">
                     {Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)}% OFF
                   </span>
                 </>
@@ -222,10 +222,10 @@ export default function ProductDetail() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
               <Button
                 variant="saffron"
-                size="xl"
+                size="lg"
                 className="flex-1"
                 onClick={handleAddToCart}
                 disabled={product.stock_status === "out_of_stock"}
@@ -233,7 +233,7 @@ export default function ProductDetail() {
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
-              <Button variant="outline" size="xl">
+              <Button variant="outline" size="lg" className="sm:w-auto">
                 <Heart className="h-5 w-5" />
               </Button>
             </div>

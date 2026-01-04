@@ -324,7 +324,7 @@ export default function Checkout() {
                     {errors.state && <p className="text-sm text-destructive">{errors.state}</p>}
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="space-y-2 sm:col-span-2 md:col-span-1">
                     <Label htmlFor="pincode">Pincode * <span className="text-xs text-muted-foreground">(6 digits)</span></Label>
                     <Input
                       id="pincode"
