@@ -13,12 +13,31 @@ import { Loader2, Banknote } from "lucide-react";
 import { z } from "zod";
 
 const addressSchema = z.object({
-  fullName: z.string().min(2, "Full name is required"),
-  phone: z.string().min(10, "Valid phone number is required"),
-  address: z.string().min(10, "Complete address is required"),
-  city: z.string().min(2, "City is required"),
-  state: z.string().min(2, "State is required"),
-  pincode: z.string().regex(/^\d{6}$/, "Valid 6-digit pincode is required"),
+  fullName: z.string()
+    .trim()
+    .min(2, "Full name must be at least 2 characters")
+    .max(100, "Full name must be less than 100 characters")
+    .regex(/^[a-zA-Z\s]+$/, "Full name can only contain letters and spaces"),
+  phone: z.string()
+    .trim()
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
+  address: z.string()
+    .trim()
+    .min(10, "Address must be at least 10 characters")
+    .max(500, "Address must be less than 500 characters"),
+  city: z.string()
+    .trim()
+    .min(2, "City must be at least 2 characters")
+    .max(50, "City must be less than 50 characters")
+    .regex(/^[a-zA-Z\s]+$/, "City can only contain letters"),
+  state: z.string()
+    .trim()
+    .min(2, "State must be at least 2 characters")
+    .max(50, "State must be less than 50 characters")
+    .regex(/^[a-zA-Z\s]+$/, "State can only contain letters"),
+  pincode: z.string()
+    .trim()
+    .regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode"),
 });
 
 export default function Checkout() {
@@ -40,8 +59,8 @@ export default function Checkout() {
   });
 
   const totalPrice = getTotalPrice();
-  const deliveryCharge = 49;
-  const finalTotal = totalPrice + deliveryCharge;
+  const deliveryCharge = 0; // Free delivery
+  const finalTotal = totalPrice;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -299,7 +318,10 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>Delivery</span>
-                    <span>₹{deliveryCharge}</span>
+                    <span className="flex items-center gap-2">
+                      <span className="line-through text-muted-foreground/60">₹49</span>
+                      <span className="text-green-600 dark:text-green-400 font-semibold">FREE</span>
+                    </span>
                   </div>
                   <div className="flex justify-between text-lg font-semibold text-foreground pt-2 border-t border-border">
                     <span>Total</span>

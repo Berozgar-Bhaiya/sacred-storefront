@@ -23,9 +23,9 @@ const buttonVariants = cva(
           "text-primary underline-offset-4 hover:underline",
         // Custom devotional variants
         saffron:
-          "bg-gradient-to-r from-primary to-saffron-light text-primary-foreground shadow-soft hover:shadow-lg hover:brightness-110 active:scale-[0.98]",
+          "bg-[hsl(28,92%,50%)] text-white font-semibold shadow-lg hover:bg-[hsl(24,88%,45%)] hover:shadow-xl active:scale-[0.98] border-0",
         gold:
-          "bg-gradient-to-r from-gold to-gold-light text-foreground font-semibold shadow-gold hover:shadow-lg hover:brightness-110 active:scale-[0.98]",
+          "bg-[hsl(45,85%,48%)] text-[hsl(20,30%,12%)] font-semibold shadow-lg hover:bg-[hsl(45,85%,42%)] hover:shadow-xl active:scale-[0.98]",
         maroon:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-maroon-light active:scale-[0.98]",
         hero:
