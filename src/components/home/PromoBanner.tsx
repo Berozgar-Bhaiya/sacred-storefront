@@ -1,8 +1,36 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+interface CouponSettings {
+  enabled: boolean;
+  code: string;
+  discount_text: string;
+}
 
 export function PromoBanner() {
+  const { data: settings } = useQuery({
+    queryKey: ["site-settings", "coupon"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("*")
+        .eq("key", "coupon")
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const couponSettings = settings?.value as unknown as CouponSettings | undefined;
+
+  // Don't render if coupon is not enabled or no settings exist
+  if (!couponSettings?.enabled || !couponSettings?.code) {
+    return null;
+  }
+
   return (
     <section className="py-8">
       <div className="container">
@@ -23,10 +51,10 @@ export function PromoBanner() {
                 </span>
               </div>
               <h2 className="font-display text-2xl font-bold text-secondary-foreground md:text-3xl lg:text-4xl">
-                Get 20% Off on First Order
+                {couponSettings.discount_text || "Special Offer"}
               </h2>
               <p className="mt-2 text-secondary-foreground/80">
-                Use code <span className="font-bold">DIVINE20</span> at checkout
+                Use code <span className="font-bold">{couponSettings.code}</span> at checkout
               </p>
             </div>
 
