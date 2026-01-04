@@ -97,7 +97,7 @@ export default function OrderConfirmation() {
           {/* Order ID */}
           <div className="mt-8 rounded-2xl border border-border bg-card p-6 text-center">
             <p className="text-sm text-muted-foreground">Order ID</p>
-            <p className="mt-1 font-mono text-lg font-bold text-primary">
+            <p className="mt-1 text-lg font-bold text-primary tracking-wide">
               {order.id.slice(0, 8).toUpperCase()}
             </p>
           </div>
