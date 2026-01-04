@@ -51,8 +51,8 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container flex h-16 items-center justify-between md:h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <img src={logo} alt="Puja Bhandar Logo" className="h-10 w-10 md:h-12 md:w-12 object-contain" />
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logo} alt="Puja Bhandar Logo" className="h-14 w-14 md:h-16 md:w-16 object-contain" />
           <div className="flex flex-col">
             <span className="font-display text-xl font-bold text-foreground md:text-2xl">
               Puja Bhandar
