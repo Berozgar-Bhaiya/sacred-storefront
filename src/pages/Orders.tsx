@@ -1,14 +1,16 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Layout } from "@/components/layout/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, MapPin, Phone, User, CalendarDays } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const statusConfig: Record<string, { 
   icon: React.ReactNode; 
@@ -128,7 +130,28 @@ export default function Orders() {
   const { user, loading: authLoading } = useAuth();
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
+  const cancelOrderMutation = useMutation({
+    mutationFn: async (orderId: string) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ order_status: "cancelled" })
+        .eq("id", orderId)
+        .eq("user_id", user!.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders", user?.id] });
+      toast.success("Order cancelled successfully");
+      setCancelOrderId(null);
+      setIsDetailsOpen(false);
+    },
+    onError: () => {
+      toast.error("Failed to cancel order");
+    },
+  });
   const { data: orders, isLoading } = useQuery({
     queryKey: ["orders", user?.id],
     queryFn: async () => {
@@ -381,11 +404,47 @@ export default function Orders() {
                     minute: "2-digit",
                   })}
                 </p>
+
+                {/* Cancel Order Button - Only show for pending orders */}
+                {selectedOrder.order_status === "pending" && (
+                  <Button
+                    variant="destructive"
+                    className="w-full mt-4"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCancelOrderId(selectedOrder.id);
+                    }}
+                  >
+                    <XCircle className="h-4 w-4 mr-2" />
+                    Cancel Order
+                  </Button>
+                )}
               </div>
             </div>
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Cancel Order Confirmation */}
+      <AlertDialog open={!!cancelOrderId} onOpenChange={() => setCancelOrderId(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Order?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel this order? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep Order</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => cancelOrderId && cancelOrderMutation.mutate(cancelOrderId)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {cancelOrderMutation.isPending ? "Cancelling..." : "Yes, Cancel Order"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 }
