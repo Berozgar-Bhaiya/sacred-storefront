@@ -9,8 +9,8 @@ export default function Cart() {
   const { items, removeItem, updateQuantity, getTotalPrice, clearCart } = useCart();
 
   const totalPrice = getTotalPrice();
-  const deliveryCharge = 49;
-  const finalTotal = totalPrice + deliveryCharge;
+  const deliveryCharge = 0; // Free delivery
+  const finalTotal = totalPrice;
 
   if (items.length === 0) {
     return (
@@ -137,7 +137,10 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>Delivery</span>
-                  <span>₹{deliveryCharge}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="line-through text-muted-foreground/60">₹49</span>
+                    <span className="text-green-600 dark:text-green-400 font-semibold">FREE</span>
+                  </span>
                 </div>
                 <div className="border-t border-border pt-4">
                   <div className="flex justify-between text-lg font-semibold text-foreground">
