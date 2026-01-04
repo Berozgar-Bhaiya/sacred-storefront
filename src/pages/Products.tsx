@@ -17,7 +17,8 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
   const categorySlug = searchParams.get("category");
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchFromUrl = searchParams.get("search");
+  const [searchQuery, setSearchQuery] = useState(searchFromUrl || "");
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categorySlug);
   const { addItem } = useCart();
@@ -26,6 +27,12 @@ export default function Products() {
   useEffect(() => {
     setSelectedCategory(categorySlug);
   }, [categorySlug]);
+
+  useEffect(() => {
+    if (searchFromUrl) {
+      setSearchQuery(searchFromUrl);
+    }
+  }, [searchFromUrl]);
 
   const { data: categories } = useQuery({
     queryKey: ["categories"],
