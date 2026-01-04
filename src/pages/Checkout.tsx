@@ -64,7 +64,21 @@ export default function Checkout() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    let sanitizedValue = value;
+
+    // Input restrictions based on field type
+    if (name === "phone") {
+      // Only allow digits, max 10
+      sanitizedValue = value.replace(/\D/g, "").slice(0, 10);
+    } else if (name === "pincode") {
+      // Only allow digits, max 6
+      sanitizedValue = value.replace(/\D/g, "").slice(0, 6);
+    } else if (name === "fullName" || name === "city" || name === "state") {
+      // Only allow letters and spaces
+      sanitizedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -201,14 +215,23 @@ export default function Checkout() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number *</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      placeholder="+91 98765 43210"
-                    />
+                    <Label htmlFor="phone">Phone Number * <span className="text-xs text-muted-foreground">(10 digits)</span></Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">+91</span>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        placeholder="9876543210"
+                        maxLength={10}
+                        className="pl-12"
+                      />
+                    </div>
+                    {formData.phone && formData.phone.length < 10 && (
+                      <p className="text-xs text-muted-foreground">{formData.phone.length}/10 digits</p>
+                    )}
                     {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                   </div>
 
@@ -232,7 +255,8 @@ export default function Checkout() {
                       name="city"
                       value={formData.city}
                       onChange={handleInputChange}
-                      placeholder="City"
+                      placeholder="Enter city name"
+                      maxLength={50}
                     />
                     {errors.city && <p className="text-sm text-destructive">{errors.city}</p>}
                   </div>
@@ -244,21 +268,26 @@ export default function Checkout() {
                       name="state"
                       value={formData.state}
                       onChange={handleInputChange}
-                      placeholder="State"
+                      placeholder="Enter state name"
+                      maxLength={50}
                     />
                     {errors.state && <p className="text-sm text-destructive">{errors.state}</p>}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="pincode">Pincode *</Label>
+                    <Label htmlFor="pincode">Pincode * <span className="text-xs text-muted-foreground">(6 digits)</span></Label>
                     <Input
                       id="pincode"
                       name="pincode"
+                      type="tel"
                       value={formData.pincode}
                       onChange={handleInputChange}
-                      placeholder="6-digit pincode"
+                      placeholder="Enter 6-digit pincode"
                       maxLength={6}
                     />
+                    {formData.pincode && formData.pincode.length < 6 && (
+                      <p className="text-xs text-muted-foreground">{formData.pincode.length}/6 digits</p>
+                    )}
                     {errors.pincode && <p className="text-sm text-destructive">{errors.pincode}</p>}
                   </div>
                 </div>
