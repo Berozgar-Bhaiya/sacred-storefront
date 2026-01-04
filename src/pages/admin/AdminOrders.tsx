@@ -209,7 +209,7 @@ export default function AdminOrders() {
                 <TableBody>
                   {orders?.map((order) => (
                     <TableRow key={order.id} className="group">
-                      <TableCell className="font-mono font-medium">
+                      <TableCell className="font-semibold tracking-wide">
                         {order.id.slice(0, 8).toUpperCase()}
                       </TableCell>
                       <TableCell>

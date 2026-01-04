@@ -243,8 +243,8 @@ export default function Orders() {
 
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                      <p className="font-mono text-sm text-muted-foreground">
-                        Order ID: {order.id.slice(0, 8).toUpperCase()}
+                      <p className="text-sm text-muted-foreground">
+                        Order ID: <span className="font-semibold text-foreground">{order.id.slice(0, 8).toUpperCase()}</span>
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Placed on {new Date(order.created_at).toLocaleDateString("en-IN", {
