@@ -92,6 +92,7 @@ export type Database = {
       orders: {
         Row: {
           created_at: string
+          estimated_delivery_date: string | null
           id: string
           order_status: Database["public"]["Enums"]["order_status"]
           payment_status: Database["public"]["Enums"]["payment_status"]
@@ -104,6 +105,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          estimated_delivery_date?: string | null
           id?: string
           order_status?: Database["public"]["Enums"]["order_status"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
@@ -116,6 +118,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          estimated_delivery_date?: string | null
           id?: string
           order_status?: Database["public"]["Enums"]["order_status"]
           payment_status?: Database["public"]["Enums"]["payment_status"]

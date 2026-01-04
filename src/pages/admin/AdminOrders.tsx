@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, Download, CheckCircle, XCircle, Truck, Package, Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Eye, Download, CheckCircle, XCircle, Truck, Package, Clock, CalendarIcon } from "lucide-react";
 
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400",
@@ -69,6 +73,23 @@ export default function AdminOrders() {
         pending: "Order set to pending",
       };
       toast({ title: statusMessages[variables.status] || "Order status updated" });
+    },
+    onError: (error: any) => {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    },
+  });
+
+  const updateDeliveryDateMutation = useMutation({
+    mutationFn: async ({ id, date }: { id: string; date: Date | null }) => {
+      const { error } = await supabase
+        .from("orders")
+        .update({ estimated_delivery_date: date ? format(date, "yyyy-MM-dd") : null })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
+      toast({ title: "Estimated delivery date updated" });
     },
     onError: (error: any) => {
       toast({ variant: "destructive", title: "Error", description: error.message });
@@ -180,6 +201,7 @@ export default function AdminOrders() {
                     <TableHead>Amount</TableHead>
                     <TableHead>Payment</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Est. Delivery</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -251,6 +273,35 @@ export default function AdminOrders() {
                             </SelectItem>
                           </SelectContent>
                         </Select>
+                      </TableCell>
+                      <TableCell>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className={cn(
+                                "w-32 justify-start text-left font-normal",
+                                !order.estimated_delivery_date && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {order.estimated_delivery_date
+                                ? format(new Date(order.estimated_delivery_date), "dd MMM")
+                                : "Set date"}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={order.estimated_delivery_date ? new Date(order.estimated_delivery_date) : undefined}
+                              onSelect={(date) => updateDeliveryDateMutation.mutate({ id: order.id, date: date || null })}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                              className="p-3 pointer-events-auto"
+                            />
+                          </PopoverContent>
+                        </Popover>
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {new Date(order.created_at).toLocaleDateString("en-IN", {
@@ -346,6 +397,43 @@ export default function AdminOrders() {
                     </span>
                   </p>
                 </div>
+              </div>
+
+              {/* Estimated Delivery Date */}
+              <div className="rounded-lg border border-border p-4">
+                <h4 className="font-medium mb-3 flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  Estimated Delivery Date
+                </h4>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !selectedOrder.estimated_delivery_date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {selectedOrder.estimated_delivery_date
+                        ? format(new Date(selectedOrder.estimated_delivery_date), "PPP")
+                        : "Select estimated delivery date"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={selectedOrder.estimated_delivery_date ? new Date(selectedOrder.estimated_delivery_date) : undefined}
+                      onSelect={(date) => {
+                        updateDeliveryDateMutation.mutate({ id: selectedOrder.id, date: date || null });
+                        setSelectedOrder({ ...selectedOrder, estimated_delivery_date: date ? format(date, "yyyy-MM-dd") : null });
+                      }}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                      className="p-3 pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Order Items */}
