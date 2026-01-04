@@ -10,6 +10,7 @@ import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, ChevronLeft, Minus
 import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { ProductReviews } from "@/components/product/ProductReviews";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -30,6 +31,24 @@ export default function ProductDetail() {
       return data;
     },
   });
+
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", product?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("reviews")
+        .select("rating")
+        .eq("product_id", product!.id);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!product?.id,
+  });
+
+  const averageRating = reviews?.length
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : "0";
+  const reviewCount = reviews?.length || 0;
 
   const handleAddToCart = () => {
     if (!product) return;
@@ -160,12 +179,19 @@ export default function ProductDetail() {
             {/* Rating */}
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 md:h-5 md:w-5 fill-gold text-gold" />
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star 
+                    key={star} 
+                    className={`h-4 w-4 md:h-5 md:w-5 ${
+                      star <= Math.round(Number(averageRating))
+                        ? "fill-gold text-gold"
+                        : "text-muted-foreground"
+                    }`} 
+                  />
                 ))}
               </div>
-              <span className="font-medium text-sm md:text-base">4.8</span>
-              <span className="text-muted-foreground text-sm md:text-base">(156 reviews)</span>
+              <span className="font-medium text-sm md:text-base">{averageRating}</span>
+              <span className="text-muted-foreground text-sm md:text-base">({reviewCount} reviews)</span>
             </div>
 
             {/* Price */}
@@ -285,6 +311,9 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <ProductReviews productId={product.id} productName={product.name} />
       </div>
     </Layout>
   );
