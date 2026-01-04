@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const footerLinks = {
   shop: [
@@ -37,9 +38,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-                <span className="text-lg">🙏</span>
-              </div>
+              <img src={logo} alt="Puja Bhandar Logo" className="h-12 w-12 object-contain" />
               <span className="font-display text-xl font-bold text-foreground">
                 Puja Bhandar
               </span>
