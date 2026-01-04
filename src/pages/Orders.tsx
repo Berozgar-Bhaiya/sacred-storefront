@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, MapPin, Phone, User } from "lucide-react";
+import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, MapPin, Phone, User, CalendarDays } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { format } from "date-fns";
 
 const statusConfig: Record<string, { 
   icon: React.ReactNode; 
@@ -229,6 +230,12 @@ export default function Orders() {
                           year: "numeric",
                         })}
                       </p>
+                      {order.estimated_delivery_date && order.order_status !== "delivered" && order.order_status !== "cancelled" && (
+                        <p className="text-sm text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                          <CalendarDays className="h-3.5 w-3.5" />
+                          Expected by {format(new Date(order.estimated_delivery_date), "dd MMM yyyy")}
+                        </p>
+                      )}
                     </div>
 
                     <div className="text-right">
@@ -293,6 +300,23 @@ export default function Orders() {
                   </div>
                 </div>
               </div>
+
+              {/* Estimated Delivery Date */}
+              {selectedOrder.estimated_delivery_date && selectedOrder.order_status !== "delivered" && selectedOrder.order_status !== "cancelled" && (
+                <div className="rounded-xl border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-800">
+                      <CalendarDays className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Estimated Delivery</p>
+                      <p className="font-semibold text-green-600 dark:text-green-400">
+                        {format(new Date(selectedOrder.estimated_delivery_date), "EEEE, dd MMMM yyyy")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Shipping Address */}
               {selectedOrder.shipping_address && (
