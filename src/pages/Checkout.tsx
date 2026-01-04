@@ -5,12 +5,53 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Banknote } from "lucide-react";
 import { z } from "zod";
+
+const INDIAN_STATES = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  // Union Territories
+  "Andaman and Nicobar Islands",
+  "Chandigarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Jammu and Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
+] as const;
 
 const addressSchema = z.object({
   fullName: z.string()
@@ -31,10 +72,7 @@ const addressSchema = z.object({
     .max(50, "City must be less than 50 characters")
     .regex(/^[a-zA-Z\s]+$/, "City can only contain letters"),
   state: z.string()
-    .trim()
-    .min(2, "State must be at least 2 characters")
-    .max(50, "State must be less than 50 characters")
-    .regex(/^[a-zA-Z\s]+$/, "State can only contain letters"),
+    .min(1, "Please select a state"),
   pincode: z.string()
     .trim()
     .regex(/^[1-9][0-9]{5}$/, "Enter a valid 6-digit pincode"),
@@ -263,14 +301,26 @@ export default function Checkout() {
 
                   <div className="space-y-2">
                     <Label htmlFor="state">State *</Label>
-                    <Input
-                      id="state"
-                      name="state"
+                    <Select
                       value={formData.state}
-                      onChange={handleInputChange}
-                      placeholder="Enter state name"
-                      maxLength={50}
-                    />
+                      onValueChange={(value) => {
+                        setFormData((prev) => ({ ...prev, state: value }));
+                        if (errors.state) {
+                          setErrors((prev) => ({ ...prev, state: "" }));
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="w-full bg-background">
+                        <SelectValue placeholder="Select your state" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover border border-border shadow-lg z-50 max-h-60">
+                        {INDIAN_STATES.map((state) => (
+                          <SelectItem key={state} value={state}>
+                            {state}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     {errors.state && <p className="text-sm text-destructive">{errors.state}</p>}
                   </div>
 
