@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/hooks/useCart";
@@ -109,13 +109,6 @@ export function FeaturedProducts() {
 
               {/* Content */}
               <div className="p-4">
-                {/* Rating */}
-                <div className="mb-2 flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-gold text-gold" />
-                  <span className="text-sm font-medium">4.8</span>
-                  <span className="text-sm text-muted-foreground">(50+)</span>
-                </div>
-
                 {/* Title */}
                 <Link to={`/products/${product.slug}`}>
                   <h3 className="font-display text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-1">
