@@ -286,26 +286,34 @@ export default function AdminProducts() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price (₹) *</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="original_price">Original Price (₹)</Label>
+                  <Label htmlFor="original_price">Original Price / MRP (₹)</Label>
                   <Input
                     id="original_price"
                     type="number"
                     step="0.01"
+                    min="0"
                     value={formData.original_price}
                     onChange={(e) => setFormData({ ...formData, original_price: e.target.value })}
+                    placeholder="e.g. 999 (will be shown as struck off)"
                   />
+                  <p className="text-xs text-muted-foreground">This price will be displayed with a strikethrough</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="price">Selling Price / Discounted (₹) *</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    placeholder="e.g. 599 (actual selling price)"
+                    required
+                    className={formErrors.price ? "border-destructive" : ""}
+                  />
+                  {formErrors.price && <p className="text-sm text-destructive">{formErrors.price}</p>}
+                  <p className="text-xs text-muted-foreground">This is the price customers will pay</p>
                 </div>
 
                 <div className="space-y-2">
