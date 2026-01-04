@@ -85,6 +85,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Periodic role re-validation every 5 minutes to prevent stale admin state
+  useEffect(() => {
+    if (!user) return;
+
+    const revalidateRole = () => {
+      fetchUserRole(user.id).then((newRole) => {
+        if (newRole !== role) {
+          setRole(newRole);
+        }
+      });
+    };
+
+    // Re-validate role every 5 minutes
+    const interval = setInterval(revalidateRole, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [user, role]);
+
   const signUp = async (email: string, password: string, name: string, phone: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;

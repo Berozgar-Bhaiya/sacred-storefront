@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, FolderOpen } from "lucide-react";
+import { validateCategoryForm } from "@/lib/validations/admin";
 
 type Category = {
   id: string;
@@ -32,6 +33,7 @@ export default function AdminCategories() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [formData, setFormData] = useState(initialFormData);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
@@ -113,6 +115,7 @@ export default function AdminCategories() {
   const resetForm = () => {
     setFormData(initialFormData);
     setEditingCategory(null);
+    setFormErrors({});
   };
 
   const openEditDialog = (category: Category) => {
@@ -127,6 +130,21 @@ export default function AdminCategories() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form data
+    const validation = validateCategoryForm(formData);
+    if (!validation.success) {
+      setFormErrors(validation.errors || {});
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fix the errors in the form.",
+      });
+      return;
+    }
+    
+    setFormErrors({});
+    
     if (editingCategory) {
       updateMutation.mutate(formData);
     } else {
@@ -159,8 +177,9 @@ export default function AdminCategories() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
+                  className={formErrors.name ? "border-destructive" : ""}
                 />
+                {formErrors.name && <p className="text-sm text-destructive">{formErrors.name}</p>}
               </div>
 
               <div className="space-y-2">
@@ -170,18 +189,21 @@ export default function AdminCategories() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={3}
+                  className={formErrors.description ? "border-destructive" : ""}
                 />
+                {formErrors.description && <p className="text-sm text-destructive">{formErrors.description}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="image_url">Image URL</Label>
                 <Input
                   id="image_url"
-                  type="url"
                   value={formData.image_url}
                   onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
                   placeholder="https://..."
+                  className={formErrors.image_url ? "border-destructive" : ""}
                 />
+                {formErrors.image_url && <p className="text-sm text-destructive">{formErrors.image_url}</p>}
               </div>
 
               <div className="flex justify-end gap-2 pt-4">

@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Pencil, Trash2, Upload, X, Loader2, Package } from "lucide-react";
+import { validateProductForm } from "@/lib/validations/admin";
 
 type Product = {
   id: string;
@@ -52,7 +53,7 @@ export default function AdminProducts() {
   const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const { data: products, isLoading } = useQuery({
     queryKey: ["admin-products"],
     queryFn: async () => {
@@ -185,6 +186,7 @@ export default function AdminProducts() {
     setEditingProduct(null);
     setImageFiles([]);
     setExistingImages([]);
+    setFormErrors({});
   };
 
   const openEditDialog = (product: Product) => {
@@ -220,6 +222,21 @@ export default function AdminProducts() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form data
+    const validation = validateProductForm(formData);
+    if (!validation.success) {
+      setFormErrors(validation.errors || {});
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fix the errors in the form.",
+      });
+      return;
+    }
+    
+    setFormErrors({});
+    
     if (editingProduct) {
       updateMutation.mutate(formData);
     } else {
@@ -253,8 +270,9 @@ export default function AdminProducts() {
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
+                    className={formErrors.name ? "border-destructive" : ""}
                   />
+                  {formErrors.name && <p className="text-sm text-destructive">{formErrors.name}</p>}
                 </div>
 
                 <div className="space-y-2 sm:col-span-2">
