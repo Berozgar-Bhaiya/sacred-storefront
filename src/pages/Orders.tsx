@@ -405,8 +405,8 @@ export default function Orders() {
                   })}
                 </p>
 
-                {/* Cancel Order Button - Only show for pending orders */}
-                {selectedOrder.order_status === "pending" && (
+                {/* Cancel Order Button - Show for pending, confirmed, and shipped orders */}
+                {["pending", "confirmed", "shipped"].includes(selectedOrder.order_status) && (
                   <Button
                     variant="destructive"
                     className="w-full mt-4"
