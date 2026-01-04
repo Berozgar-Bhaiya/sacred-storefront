@@ -23,9 +23,9 @@ export function HeroSection() {
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl animate-fade-in-up">
-            Bring Divine Blessings{" "}
-            <span className="bg-gradient-to-r from-primary to-saffron-light bg-clip-text text-transparent">
+          <h1 className="font-display text-4xl font-bold leading-tight md:text-5xl lg:text-6xl animate-fade-in-up drop-shadow-lg" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <span className="text-maroon dark:text-foreground">Bring Divine Blessings</span>{" "}
+            <span className="bg-gradient-to-r from-primary via-saffron to-gold bg-clip-text text-transparent drop-shadow-md">
               Home
             </span>
           </h1>
