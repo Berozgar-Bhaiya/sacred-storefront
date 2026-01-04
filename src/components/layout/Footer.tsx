@@ -37,8 +37,8 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand Column */}
           <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={logo} alt="Puja Bhandar Logo" className="h-12 w-12 object-contain" />
+            <Link to="/" className="flex items-center gap-3">
+              <img src={logo} alt="Puja Bhandar Logo" className="h-16 w-16 object-contain" />
               <span className="font-display text-xl font-bold text-foreground">
                 Puja Bhandar
               </span>

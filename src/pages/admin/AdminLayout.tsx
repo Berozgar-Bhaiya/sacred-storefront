@@ -35,8 +35,8 @@ export default function AdminLayout() {
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-        <img src={logo} alt="Puja Bhandar Logo" className="h-8 w-8 object-contain" />
+      <div className="flex h-16 items-center gap-3 border-b border-border px-6">
+        <img src={logo} alt="Puja Bhandar Logo" className="h-10 w-10 object-contain" />
         <span className="font-display text-lg font-bold text-foreground">
           Admin Panel
         </span>
@@ -101,8 +101,8 @@ export default function AdminLayout() {
 
       {/* Mobile Header */}
       <div className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="Puja Bhandar Logo" className="h-8 w-8 object-contain" />
+        <div className="flex items-center gap-3">
+          <img src={logo} alt="Puja Bhandar Logo" className="h-10 w-10 object-contain" />
           <span className="font-display text-lg font-bold text-foreground">
             Admin
           </span>
