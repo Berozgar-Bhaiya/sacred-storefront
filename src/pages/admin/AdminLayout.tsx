@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Link, useLocation, Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import logo from "@/assets/logo.png";
 import {
   LayoutDashboard,
   Package,
@@ -35,9 +36,7 @@ export default function AdminLayout() {
     <div className="flex h-full flex-col">
       {/* Logo */}
       <div className="flex h-16 items-center gap-2 border-b border-border px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-          <span className="text-sm">🙏</span>
-        </div>
+        <img src={logo} alt="Puja Bhandar Logo" className="h-8 w-8 object-contain" />
         <span className="font-display text-lg font-bold text-foreground">
           Admin Panel
         </span>
@@ -103,9 +102,7 @@ export default function AdminLayout() {
       {/* Mobile Header */}
       <div className="fixed left-0 right-0 top-0 z-50 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-            <span className="text-sm">🙏</span>
-          </div>
+          <img src={logo} alt="Puja Bhandar Logo" className="h-8 w-8 object-contain" />
           <span className="font-display text-lg font-bold text-foreground">
             Admin
           </span>

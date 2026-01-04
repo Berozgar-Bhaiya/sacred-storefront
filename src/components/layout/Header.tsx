@@ -4,6 +4,7 @@ import { ShoppingCart, User, Menu, X, Search, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
 import { useCart } from "@/hooks/useCart";
 import { Input } from "@/components/ui/input";
 import {
@@ -51,9 +52,7 @@ export function Header() {
       <div className="container flex h-16 items-center justify-between md:h-20">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary">
-            <span className="font-display text-lg font-bold text-primary-foreground">🙏</span>
-          </div>
+          <img src={logo} alt="Puja Bhandar Logo" className="h-10 w-10 md:h-12 md:w-12 object-contain" />
           <div className="flex flex-col">
             <span className="font-display text-xl font-bold text-foreground md:text-2xl">
               Puja Bhandar
