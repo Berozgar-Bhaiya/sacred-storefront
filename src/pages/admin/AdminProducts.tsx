@@ -246,14 +246,14 @@ export default function AdminProducts() {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 md:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground">Products</h1>
-          <p className="mt-1 text-muted-foreground">Manage your product catalog</p>
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-foreground">Products</h1>
+          <p className="mt-1 text-sm md:text-base text-muted-foreground">Manage your product catalog</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) resetForm(); }}>
           <DialogTrigger asChild>
-            <Button variant="saffron">
+            <Button variant="saffron" className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
@@ -448,7 +448,8 @@ export default function AdminProducts() {
           ) : products?.length === 0 ? (
             <p className="text-center py-8 text-muted-foreground">No products yet</p>
           ) : (
-            <Table>
+            <div className="overflow-x-auto">
+              <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Image</TableHead>
@@ -508,6 +509,7 @@ export default function AdminProducts() {
                 ))}
               </TableBody>
             </Table>
+            </div>
           )}
         </CardContent>
       </Card>

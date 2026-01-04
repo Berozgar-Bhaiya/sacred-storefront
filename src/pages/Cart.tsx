@@ -78,7 +78,7 @@ export default function Cart() {
                       </p>
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between">
+                    <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       {/* Quantity Controls */}
                       <div className="flex items-center gap-2">
                         <Button
@@ -104,11 +104,11 @@ export default function Cart() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-destructive hover:text-destructive"
+                        className="text-destructive hover:text-destructive justify-start sm:justify-center"
                         onClick={() => removeItem(item.id)}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Remove
+                        <span className="sm:inline">Remove</span>
                       </Button>
                     </div>
                   </div>
