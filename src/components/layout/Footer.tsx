@@ -11,7 +11,6 @@ const footerLinks = {
     { label: "Idols & Murtis", href: "/products?category=idols" },
   ],
   support: [
-    { label: "About Us", href: "/about" },
     { label: "My Orders", href: "/orders" },
     { label: "My Cart", href: "/cart" },
     { label: "Sign In", href: "/auth" },
