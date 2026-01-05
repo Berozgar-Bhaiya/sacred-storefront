@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Heart, Star, Filter, X, Search } from "lucide-react";
+import { ShoppingCart, Heart, Filter, X, Search } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -276,12 +276,6 @@ export default function Products() {
 
                     {/* Content */}
                     <div className="p-4">
-                      <div className="mb-2 flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-gold text-gold" />
-                        <span className="text-sm font-medium">4.8</span>
-                        <span className="text-sm text-muted-foreground">(50+)</span>
-                      </div>
-
                       <Link to={`/products/${product.slug}`}>
                         <h3 className="font-display text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-2">
                           {product.name}
