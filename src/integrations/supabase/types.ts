@@ -217,6 +217,44 @@ export type Database = {
         }
         Relationships: []
       }
+      return_requests: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          reason: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          reason: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          reason?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "return_requests_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string
@@ -327,6 +365,7 @@ export type Database = {
         | "shipped"
         | "delivered"
         | "cancelled"
+        | "return_requested"
       payment_status: "pending" | "paid" | "failed" | "refunded"
       stock_status: "in_stock" | "out_of_stock"
     }
@@ -463,6 +502,7 @@ export const Constants = {
         "shipped",
         "delivered",
         "cancelled",
+        "return_requested",
       ],
       payment_status: ["pending", "paid", "failed", "refunded"],
       stock_status: ["in_stock", "out_of_stock"],

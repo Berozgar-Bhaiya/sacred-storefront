@@ -6,11 +6,21 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, MapPin, Phone, User, CalendarDays } from "lucide-react";
+import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, MapPin, Phone, User, CalendarDays, RotateCcw } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
+import { format, differenceInDays } from "date-fns";
 import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+const RETURN_REASONS = [
+  "Product Damaged",
+  "Wrong Product Received",
+  "Product Not as Described",
+  "Quality Not Satisfactory",
+  "Size/Fit Issues",
+  "Other"
+];
 
 const statusConfig: Record<string, { 
   icon: React.ReactNode; 
@@ -53,6 +63,13 @@ const statusConfig: Record<string, {
     bgColor: "bg-red-100 dark:bg-red-900/30",
     message: "Order Cancelled",
     description: "This order has been cancelled.",
+  },
+  return_requested: {
+    icon: <RotateCcw className="h-5 w-5" />,
+    color: "text-orange-600 dark:text-orange-400",
+    bgColor: "bg-orange-100 dark:bg-orange-900/30",
+    message: "Return Requested",
+    description: "Your return request is being processed.",
   },
 };
 
@@ -131,6 +148,8 @@ export default function Orders() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [cancelOrderId, setCancelOrderId] = useState<string | null>(null);
+  const [returnOrderId, setReturnOrderId] = useState<string | null>(null);
+  const [returnReason, setReturnReason] = useState<string>("");
   const queryClient = useQueryClient();
 
   const cancelOrderMutation = useMutation({
@@ -150,6 +169,38 @@ export default function Orders() {
     },
     onError: () => {
       toast.error("Failed to cancel order");
+    },
+  });
+
+  const returnOrderMutation = useMutation({
+    mutationFn: async ({ orderId, reason }: { orderId: string; reason: string }) => {
+      // Create return request
+      const { error: returnError } = await supabase
+        .from("return_requests")
+        .insert({
+          order_id: orderId,
+          user_id: user!.id,
+          reason: reason,
+        });
+      if (returnError) throw returnError;
+
+      // Update order status
+      const { error: orderError } = await supabase
+        .from("orders")
+        .update({ order_status: "return_requested" })
+        .eq("id", orderId)
+        .eq("user_id", user!.id);
+      if (orderError) throw orderError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders", user?.id] });
+      toast.success("Return request submitted successfully");
+      setReturnOrderId(null);
+      setReturnReason("");
+      setIsDetailsOpen(false);
+    },
+    onError: () => {
+      toast.error("Failed to submit return request");
     },
   });
   const { data: orders, isLoading } = useQuery({
@@ -419,6 +470,44 @@ export default function Orders() {
                     Cancel Order
                   </Button>
                 )}
+
+                {/* Return Order Button - Show for delivered orders within 3 days */}
+                {selectedOrder.order_status === "delivered" && (() => {
+                  const deliveryDate = new Date(selectedOrder.updated_at);
+                  const daysSinceDelivery = differenceInDays(new Date(), deliveryDate);
+                  const canReturn = daysSinceDelivery <= 3;
+                  
+                  if (canReturn) {
+                    return (
+                      <Button
+                        variant="outline"
+                        className="w-full mt-4 border-orange-500 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-900/20"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setReturnOrderId(selectedOrder.id);
+                        }}
+                      >
+                        <RotateCcw className="h-4 w-4 mr-2" />
+                        Return Order ({3 - daysSinceDelivery} days left)
+                      </Button>
+                    );
+                  } else {
+                    return (
+                      <p className="mt-4 text-center text-sm text-muted-foreground">
+                        Return period expired (3 days after delivery)
+                      </p>
+                    );
+                  }
+                })()}
+
+                {/* Return Requested Status */}
+                {selectedOrder.order_status === "return_requested" && (
+                  <div className="mt-4 p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800">
+                    <p className="text-sm text-orange-700 dark:text-orange-400 text-center">
+                      Your return request is being processed. We'll contact you soon.
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -441,6 +530,47 @@ export default function Orders() {
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               {cancelOrderMutation.isPending ? "Cancelling..." : "Yes, Cancel Order"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Return Order Dialog */}
+      <AlertDialog open={!!returnOrderId} onOpenChange={() => {
+        setReturnOrderId(null);
+        setReturnReason("");
+      }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Return Order</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please select a reason for returning this order. Returns are accepted within 3 days of delivery.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="py-4">
+            <Select value={returnReason} onValueChange={setReturnReason}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select return reason" />
+              </SelectTrigger>
+              <SelectContent>
+                {RETURN_REASONS.map((reason) => (
+                  <SelectItem key={reason} value={reason}>
+                    {reason}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => returnOrderId && returnReason && returnOrderMutation.mutate({ orderId: returnOrderId, reason: returnReason })}
+              disabled={!returnReason}
+              className="bg-orange-600 text-white hover:bg-orange-700"
+            >
+              {returnOrderMutation.isPending ? "Submitting..." : "Submit Return Request"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
