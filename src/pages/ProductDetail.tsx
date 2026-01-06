@@ -228,17 +228,6 @@ export default function ProductDetail() {
               </Button>
             </div>
 
-            {/* Meesho Link */}
-            {product.meesho_link && (
-              <a
-                href={product.meesho_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center text-sm text-muted-foreground hover:text-primary"
-              >
-                Also available on Meesho →
-              </a>
-            )}
 
             {/* Delivery Info */}
             <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
