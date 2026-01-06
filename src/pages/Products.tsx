@@ -316,7 +316,7 @@ export default function Products() {
                     {/* Content */}
                     <div className="p-4">
                       <Link to={`/products/${product.slug}`}>
-                        <h3 className="font-display text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-2">
+                        <h3 className="font-body text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-2">
                           {product.name}
                         </h3>
                       </Link>
