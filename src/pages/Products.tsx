@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Heart, Filter, X, Search } from "lucide-react";
+import { ShoppingCart, Heart, Filter, X, Search, ArrowUpDown } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,6 +22,7 @@ export default function Products() {
   const [searchQuery, setSearchQuery] = useState(searchFromUrl || "");
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categorySlug);
+  const [sortBy, setSortBy] = useState("newest");
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -47,14 +49,33 @@ export default function Products() {
   });
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ["products", selectedCategory, priceRange, searchQuery],
+    queryKey: ["products", selectedCategory, priceRange, searchQuery, sortBy],
     queryFn: async () => {
       let query = supabase
         .from("products")
         .select("*, categories(name, slug)")
         .gte("price", priceRange[0])
-        .lte("price", priceRange[1])
-        .order("created_at", { ascending: false });
+        .lte("price", priceRange[1]);
+
+      // Apply sorting
+      switch (sortBy) {
+        case "price_low":
+          query = query.order("price", { ascending: true });
+          break;
+        case "price_high":
+          query = query.order("price", { ascending: false });
+          break;
+        case "name_asc":
+          query = query.order("name", { ascending: true });
+          break;
+        case "name_desc":
+          query = query.order("name", { ascending: false });
+          break;
+        case "newest":
+        default:
+          query = query.order("created_at", { ascending: false });
+          break;
+      }
 
       if (selectedCategory) {
         const category = categories?.find((c) => c.slug === selectedCategory);
@@ -92,6 +113,7 @@ export default function Products() {
     setSelectedCategory(null);
     setPriceRange([0, 5000]);
     setSearchQuery("");
+    setSortBy("newest");
     setSearchParams({});
   };
 
@@ -184,13 +206,30 @@ export default function Products() {
       />
       <div className="container py-8 md:py-12">
         {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">
-            {categoryName}
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            {products?.length || 0} products found
-          </p>
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-bold text-foreground md:text-4xl">
+              {categoryName}
+            </h1>
+            <p className="mt-2 text-muted-foreground">
+              {products?.length || 0} products found
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="price_low">Price: Low to High</SelectItem>
+                <SelectItem value="price_high">Price: High to Low</SelectItem>
+                <SelectItem value="name_asc">Name: A to Z</SelectItem>
+                <SelectItem value="name_desc">Name: Z to A</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="flex gap-8">
