@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Heart, Filter, X, Search, ArrowUpDown } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { useWishlist } from "@/hooks/useWishlist";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -25,6 +26,7 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("newest");
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   useEffect(() => {
     setSelectedCategory(categorySlug);
@@ -299,8 +301,18 @@ export default function Products() {
                           </span>
                         )}
 
-                        <button className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-muted-foreground backdrop-blur-sm transition-colors hover:bg-background hover:text-destructive">
-                          <Heart className="h-5 w-5" />
+                        <button 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleWishlist(product.id);
+                          }}
+                          className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-sm transition-colors ${
+                            isInWishlist(product.id)
+                              ? "bg-destructive text-destructive-foreground"
+                              : "bg-background/80 text-muted-foreground hover:bg-background hover:text-destructive"
+                          }`}
+                        >
+                          <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} />
                         </button>
 
                         {product.stock_status === "out_of_stock" && (

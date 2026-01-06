@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, Menu, X, Search, LogOut } from "lucide-react";
+import { ShoppingCart, User, Menu, X, Search, LogOut, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
@@ -133,6 +133,12 @@ export function Header() {
                     <Link to="/account" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       My Account
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/wishlist" className="flex items-center">
+                      <Heart className="mr-2 h-4 w-4" />
+                      My Wishlist
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>

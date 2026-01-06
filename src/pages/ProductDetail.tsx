@@ -10,6 +10,7 @@ import { ShoppingCart, Heart, Truck, Shield, RotateCcw, ChevronLeft, Minus, Plus
 import { useState } from "react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
+import { useWishlist } from "@/hooks/useWishlist";
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -17,6 +18,7 @@ export default function ProductDetail() {
   const [selectedImage, setSelectedImage] = useState(0);
   const { addItem } = useCart();
   const { toast } = useToast();
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["product", slug],
@@ -223,8 +225,13 @@ export default function ProductDetail() {
                 <ShoppingCart className="mr-2 h-5 w-5" />
                 Add to Cart
               </Button>
-              <Button variant="outline" size="lg" className="sm:w-auto">
-                <Heart className="h-5 w-5" />
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className={`sm:w-auto ${product && isInWishlist(product.id) ? "text-destructive border-destructive hover:bg-destructive hover:text-destructive-foreground" : ""}`}
+                onClick={() => product && toggleWishlist(product.id)}
+              >
+                <Heart className={`h-5 w-5 ${product && isInWishlist(product.id) ? "fill-current" : ""}`} />
               </Button>
             </div>
 
