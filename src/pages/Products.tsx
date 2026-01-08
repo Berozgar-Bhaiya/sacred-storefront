@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/layout/Layout";
@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ShoppingCart, Heart, Filter, X, Search, ArrowUpDown } from "lucide-react";
+import { Filter, X, Search, ArrowUpDown, Loader2 } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/hooks/use-toast";
 import { useWishlist } from "@/hooks/useWishlist";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -24,8 +25,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-
-const PRODUCTS_PER_PAGE = 12;
+import { useInfiniteProducts, PRODUCTS_PER_PAGE } from "@/hooks/useInfiniteProducts";
+import { ProductCard } from "@/components/products/ProductCard";
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,6 +41,8 @@ export default function Products() {
   const { addItem } = useCart();
   const { toast } = useToast();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const isMobile = useIsMobile();
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setSelectedCategory(categorySlug);
@@ -75,7 +78,8 @@ export default function Products() {
     },
   });
 
-  const { data: productsData, isLoading } = useQuery({
+  // Paginated query for desktop
+  const { data: paginatedData, isLoading: isPaginatedLoading } = useQuery({
     queryKey: ["products", selectedCategory, priceRange, searchQuery, sortBy, currentPage],
     queryFn: async () => {
       const from = (currentPage - 1) * PRODUCTS_PER_PAGE;
@@ -87,7 +91,6 @@ export default function Products() {
         .gte("price", priceRange[0])
         .lte("price", priceRange[1]);
 
-      // Apply sorting
       switch (sortBy) {
         case "price_low":
           query = query.order("price", { ascending: true });
@@ -122,11 +125,57 @@ export default function Products() {
       if (error) throw error;
       return { products: data, totalCount: count || 0 };
     },
-    enabled: !!categories,
+    enabled: !!categories && !isMobile,
   });
 
-  const products = productsData?.products;
-  const totalCount = productsData?.totalCount || 0;
+  // Infinite scroll query for mobile
+  const {
+    data: infiniteData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading: isInfiniteLoading,
+  } = useInfiniteProducts({
+    selectedCategory,
+    priceRange,
+    searchQuery,
+    sortBy,
+    categories,
+  });
+
+  // Intersection Observer for infinite scroll
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [target] = entries;
+      if (target.isIntersecting && hasNextPage && !isFetchingNextPage && isMobile) {
+        fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasNextPage, isFetchingNextPage, isMobile]
+  );
+
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element || !isMobile) return;
+
+    const observer = new IntersectionObserver(handleObserver, {
+      root: null,
+      rootMargin: "100px",
+      threshold: 0,
+    });
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [handleObserver, isMobile]);
+
+  // Determine which data to use
+  const isLoading = isMobile ? isInfiniteLoading : isPaginatedLoading;
+  const products = isMobile
+    ? infiniteData?.pages.flatMap((page) => page.products) || []
+    : paginatedData?.products || [];
+  const totalCount = isMobile
+    ? infiniteData?.pages[0]?.totalCount || 0
+    : paginatedData?.totalCount || 0;
   const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
 
   const handleAddToCart = (product: any) => {
@@ -262,7 +311,7 @@ export default function Products() {
 
   return (
     <Layout>
-      <SEOHead 
+      <SEOHead
         title={categoryName}
         description={`Shop ${categoryName.toLowerCase()} - authentic Hindu puja items and religious essentials. Quality products with Cash on Delivery across India.`}
         keywords={`${categoryName.toLowerCase()}, puja items, hindu religious items, india`}
@@ -276,7 +325,7 @@ export default function Products() {
             </h1>
             <p className="mt-2 text-muted-foreground">
               {totalCount} products found
-              {totalPages > 1 && ` • Page ${currentPage} of ${totalPages}`}
+              {!isMobile && totalPages > 1 && ` • Page ${currentPage} of ${totalPages}`}
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -344,99 +393,47 @@ export default function Products() {
               <>
                 <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {products?.map((product, index) => (
-                    <div
+                    <ProductCard
                       key={product.id}
-                      className="group relative overflow-hidden rounded-2xl bg-card shadow-card transition-all duration-300 hover:shadow-lg animate-fade-in-up"
-                      style={{ animationDelay: `${index * 0.05}s` }}
-                    >
-                      {/* Image */}
-                      <Link to={`/products/${product.slug}`} className="block">
-                        <div className="relative aspect-square overflow-hidden">
-                          <img
-                            src={product.image_urls?.[0] || "https://via.placeholder.com/400"}
-                            alt={product.name}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          />
-                          
-                          {product.original_price && Number(product.original_price) > Number(product.price) && (
-                            <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                              {Math.round((1 - Number(product.price) / Number(product.original_price)) * 100)}% OFF
-                            </span>
-                          )}
-
-                          <button 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              toggleWishlist(product.id);
-                            }}
-                            className={`absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full backdrop-blur-sm transition-colors ${
-                              isInWishlist(product.id)
-                                ? "bg-destructive text-destructive-foreground"
-                                : "bg-background/80 text-muted-foreground hover:bg-background hover:text-destructive"
-                            }`}
-                          >
-                            <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-current" : ""}`} />
-                          </button>
-
-                          {product.stock_status === "out_of_stock" && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-                              <span className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground">
-                                Out of Stock
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </Link>
-
-                      {/* Content */}
-                      <div className="p-4">
-                        <Link to={`/products/${product.slug}`}>
-                          <h3 className="font-body text-lg font-semibold text-foreground transition-colors hover:text-primary line-clamp-2">
-                            {product.name}
-                          </h3>
-                        </Link>
-
-                        <p className="mt-1 text-sm text-muted-foreground">
-                          {(product.categories as any)?.name}
-                        </p>
-
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="text-xl font-bold text-primary">
-                            ₹{Number(product.price).toLocaleString("en-IN")}
-                          </span>
-                          {product.original_price && (
-                            <span className="text-sm text-muted-foreground line-through">
-                              ₹{Number(product.original_price).toLocaleString("en-IN")}
-                            </span>
-                          )}
-                        </div>
-
-                        <Button
-                          variant="saffron"
-                          className="mt-4 w-full"
-                          onClick={() => handleAddToCart(product)}
-                          disabled={product.stock_status === "out_of_stock"}
-                        >
-                          <ShoppingCart className="mr-2 h-4 w-4" />
-                          Add to Cart
-                        </Button>
-                      </div>
-                    </div>
+                      product={product}
+                      index={index}
+                      isInWishlist={isInWishlist(product.id)}
+                      onToggleWishlist={() => toggleWishlist(product.id)}
+                      onAddToCart={() => handleAddToCart(product)}
+                    />
                   ))}
                 </div>
 
-                {/* Pagination */}
-                {totalPages > 1 && (
+                {/* Infinite scroll loader for mobile */}
+                {isMobile && (
+                  <div ref={loadMoreRef} className="mt-8 flex justify-center py-4">
+                    {isFetchingNextPage ? (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span>Loading more...</span>
+                      </div>
+                    ) : hasNextPage ? (
+                      <p className="text-sm text-muted-foreground">Scroll for more</p>
+                    ) : products.length > 0 ? (
+                      <p className="text-sm text-muted-foreground">You've seen all products</p>
+                    ) : null}
+                  </div>
+                )}
+
+                {/* Pagination for desktop */}
+                {!isMobile && totalPages > 1 && (
                   <div className="mt-12">
                     <Pagination>
                       <PaginationContent>
                         <PaginationItem>
                           <PaginationPrevious
                             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                            className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            className={
+                              currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"
+                            }
                           />
                         </PaginationItem>
-                        
+
                         {getVisiblePages().map((page, index) => (
                           <PaginationItem key={index}>
                             {page === "ellipsis" ? (
@@ -452,11 +449,15 @@ export default function Products() {
                             )}
                           </PaginationItem>
                         ))}
-                        
+
                         <PaginationItem>
                           <PaginationNext
                             onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                            className={
+                              currentPage === totalPages
+                                ? "pointer-events-none opacity-50"
+                                : "cursor-pointer"
+                            }
                           />
                         </PaginationItem>
                       </PaginationContent>
