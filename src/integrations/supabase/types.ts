@@ -143,6 +143,7 @@ export type Database = {
           name: string
           original_price: number | null
           price: number
+          returnable: boolean
           slug: string | null
           stock_status: Database["public"]["Enums"]["stock_status"]
           updated_at: string
@@ -158,6 +159,7 @@ export type Database = {
           name: string
           original_price?: number | null
           price: number
+          returnable?: boolean
           slug?: string | null
           stock_status?: Database["public"]["Enums"]["stock_status"]
           updated_at?: string
@@ -173,6 +175,7 @@ export type Database = {
           name?: string
           original_price?: number | null
           price?: number
+          returnable?: boolean
           slug?: string | null
           stock_status?: Database["public"]["Enums"]["stock_status"]
           updated_at?: string
