@@ -250,12 +250,14 @@ export default function ProductDetail() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full ${product.returnable ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}`}>
                     <RotateCcw className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="font-medium">3 Days Return</p>
-                    <p className="text-sm text-muted-foreground">Easy return policy</p>
+                    <p className="font-medium">{product.returnable ? "3 Days Return" : "Non-Returnable"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {product.returnable ? "Easy return policy" : "This item cannot be returned"}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
