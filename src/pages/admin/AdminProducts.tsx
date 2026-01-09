@@ -26,6 +26,7 @@ type Product = {
   slug: string | null;
   meesho_link: string | null;
   featured: boolean | null;
+  returnable: boolean;
 };
 
 type Category = {
@@ -42,6 +43,7 @@ const initialFormData = {
   stock_status: "in_stock",
   meesho_link: "",
   featured: false,
+  returnable: true,
 };
 
 export default function AdminProducts() {
@@ -110,6 +112,7 @@ export default function AdminProducts() {
         stock_status: data.stock_status as "in_stock" | "out_of_stock",
         meesho_link: data.meesho_link || null,
         featured: data.featured,
+        returnable: data.returnable,
         image_urls: imageUrls,
         slug,
       }]);
@@ -149,6 +152,7 @@ export default function AdminProducts() {
           stock_status: data.stock_status as "in_stock" | "out_of_stock",
           meesho_link: data.meesho_link || null,
           featured: data.featured,
+          returnable: data.returnable,
           image_urls: imageUrls,
           slug,
         })
@@ -200,6 +204,7 @@ export default function AdminProducts() {
       stock_status: product.stock_status,
       meesho_link: product.meesho_link || "",
       featured: product.featured || false,
+      returnable: product.returnable,
     });
     setExistingImages(product.image_urls || []);
     setImageFiles([]);
@@ -417,6 +422,18 @@ export default function AdminProducts() {
                     className="h-4 w-4"
                   />
                   <Label htmlFor="featured">Featured Product</Label>
+                </div>
+
+                <div className="flex items-center gap-2 sm:col-span-2">
+                  <input
+                    type="checkbox"
+                    id="returnable"
+                    checked={formData.returnable}
+                    onChange={(e) => setFormData({ ...formData, returnable: e.target.checked })}
+                    className="h-4 w-4"
+                  />
+                  <Label htmlFor="returnable">Returnable Product</Label>
+                  <span className="text-xs text-muted-foreground">(Allow customers to return this product)</span>
                 </div>
               </div>
 

@@ -208,7 +208,7 @@ export default function Orders() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select("*, order_items(*)")
+        .select("*, order_items(*, products(returnable))")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -216,6 +216,12 @@ export default function Orders() {
     },
     enabled: !!user,
   });
+
+  // Check if any product in the order is non-returnable
+  const isOrderReturnable = (order: any) => {
+    if (!order.order_items) return false;
+    return order.order_items.every((item: any) => item.products?.returnable !== false);
+  };
 
   if (authLoading) {
     return (
@@ -471,11 +477,20 @@ export default function Orders() {
                   </Button>
                 )}
 
-                {/* Return Order Button - Show for delivered orders within 3 days */}
+                {/* Return Order Button - Show for delivered orders within 3 days if returnable */}
                 {selectedOrder.order_status === "delivered" && (() => {
                   const deliveryDate = new Date(selectedOrder.updated_at);
                   const daysSinceDelivery = differenceInDays(new Date(), deliveryDate);
                   const canReturn = daysSinceDelivery <= 3;
+                  const orderReturnable = isOrderReturnable(selectedOrder);
+                  
+                  if (!orderReturnable) {
+                    return (
+                      <p className="mt-4 text-center text-sm text-muted-foreground">
+                        This order contains non-returnable items
+                      </p>
+                    );
+                  }
                   
                   if (canReturn) {
                     return (
