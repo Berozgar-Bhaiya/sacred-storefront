@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
@@ -73,9 +73,21 @@ export function ProductCard({
           </h3>
         </Link>
 
-        <p className="mt-1 text-sm text-muted-foreground">
-          {(product.categories as any)?.name}
-        </p>
+        <div className="mt-1 flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">
+            {(product.categories as any)?.name}
+          </p>
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+              product.returnable
+                ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                : "bg-muted text-muted-foreground"
+            }`}
+          >
+            <RotateCcw className="h-3 w-3" />
+            {product.returnable ? "Returnable" : "No Return"}
+          </span>
+        </div>
 
         <div className="mt-3 flex items-center gap-2">
           <span className="text-xl font-bold text-primary">
